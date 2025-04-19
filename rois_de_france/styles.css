@@ -1,529 +1,627 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chronologie Royale de France (987-1870)</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lora:wght@400;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="main-container">
-        <header>
-            <div class="title-container">
-                <div class="fleur-de-lys left"></div>
-                <h1>Chronologie Royale de France</h1>
-                <div class="fleur-de-lys right"></div>
-            </div>
-            <p class="subtitle">Découvrez l'histoire des monarques français de 987 à 1870</p>
-        </header>
-
-        <div class="controls-container">
-            <div class="timeline-controls">
-                <button id="zoom-in" class="control-btn">+</button>
-                <button id="zoom-out" class="control-btn">-</button>
-                <button id="reset-view" class="control-btn">↺</button>
-            </div>
-            <div class="dynasty-filter">
-                <span>Filtrer par dynastie:</span>
-                <div class="filter-buttons">
-                    <button class="dynasty-btn" data-dynasty="all">Toutes</button>
-                    <button class="dynasty-btn" data-dynasty="capet">Capétiens</button>
-                    <button class="dynasty-btn" data-dynasty="valois">Valois</button>
-                    <button class="dynasty-btn" data-dynasty="bourbon">Bourbons</button>
-                    <button class="dynasty-btn" data-dynasty="bonaparte">Bonaparte</button>
-                    <button class="dynasty-btn" data-dynasty="orleans">Orléans</button>
-                </div>
-            </div>
-            <div class="view-mode">
-                <button id="timeline-view" class="view-btn active">Chronologie</button>
-                <button id="card-view" class="view-btn">Cartes</button>
-                <button id="quiz-view" class="view-btn">Quiz</button>
-            </div>
-        </div>
-
-        <div class="timeline-container">
-            <div id="timeline-markers"></div>
-            <div id="dynasty-blocks" class="dynasty-blocks"></div>
-            <div id="timeline-zoom-area">
-                <div id="timeline"></div>
-            </div>
-        </div>
-
-        <div class="content-area">
-            <div id="king-details" class="king-details">
-                <div class="placeholder">
-                    <div class="crown-icon"></div>
-                    <p>Sélectionnez un monarque pour voir les détails</p>
-                </div>
-            </div>
-            
-            <div id="quiz-container" class="quiz-container hidden">
-                <h2>Quiz Royal</h2>
-                <div id="quiz-question"></div>
-                <div id="quiz-options"></div>
-                <div id="quiz-result"></div>
-                <button id="next-question" class="royal-btn">Question suivante</button>
-            </div>
-        </div>
-
-        <div id="dynasty-legend" class="dynasty-legend">
-            <h3>Dynasties</h3>
-            <div class="legend-item">
-                <span class="legend-color capet"></span>
-                <span>Capétiens</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color valois"></span>
-                <span>Valois</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color bourbon"></span>
-                <span>Bourbons</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color orleans"></span>
-                <span>Orléans</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-color bonaparte"></span>
-                <span>Bonaparte</span>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <p>© 2025 - Chronologie Royale de France - Tous droits réservés</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
-function updateZoom() {
-    const timeline = document.getElementById('timeline');
-    timeline.style.transform = `scale(${zoomLevel})`;
-    timeline.style.transformOrigin = 'center top';
+:root {
+    --royal-blue: #14213d;
+    --royal-gold: #fca311;
+    --royal-purple: #5f4b8b;
+    --light-parchment: #f7f3e9;
+    --dark-parchment: #e7d9c1;
+    --text-dark: #2c3e50;
+    --text-light: #ecf0f1;
+    --capet-color: #f39c12;
+    --valois-color: #27ae60;
+    --bourbon-color: #3498db;
+    --orleans-color: #9b59b6;
+    --bonaparte-color: #e74c3c;
 }
 
-// Boutons de contrôle de zoom
-document.getElementById('zoom-in').addEventListener('click', () => {
-    zoomLevel = Math.min(zoomLevel + 0.2, 2);
-    updateZoom();
-});
-
-document.getElementById('zoom-out').addEventListener('click', () => {
-    zoomLevel = Math.max(zoomLevel - 0.2, 0.6);
-    updateZoom();
-});
-
-document.getElementById('reset-view').addEventListener('click', () => {
-    zoomLevel = 1;
-    updateZoom();
-});
-
-// Filtres de dynastie
-const dynastyButtons = document.querySelectorAll('.dynasty-btn');
-dynastyButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        currentDynasty = button.getAttribute('data-dynasty');
-        // Activer le bouton sélectionné visuellement
-        dynastyButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        filterKings();
-    });
-});
-
-// Boutons de vue
-document.getElementById('timeline-view').addEventListener('click', () => switchView('timeline'));
-document.getElementById('card-view').addEventListener('click', () => switchView('card'));
-document.getElementById('quiz-view').addEventListener('click', () => switchView('quiz'));
-
-// Quiz
-document.getElementById('next-question').addEventListener('click', showNextQuizQuestion);
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-function createTimelineMarkers() {
-    const timelineMarkersContainer = document.getElementById('timeline-markers');
-    timelineMarkersContainer.innerHTML = '';
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--light-parchment);
+    color: var(--text-dark);
+    line-height: 1.6;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f7f3e9" /><path d="M0,0L100,100M100,0L0,100" stroke="%23e7d9c1" stroke-width="0.5" /></svg>');
+    background-attachment: fixed;
+}
 
-    // Années de début et de fin pour la chronologie
-    const startYear = 987;
-    const endYear = 1900;
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-    // Créer des marqueurs pour chaque siècle
-    for (let year = 1000; year <= endYear; year += 100) {
-        const position = ((year - startYear) / (endYear - startYear)) * 100;
-        
-        // Marqueur d'année
-        const marker = document.createElement('div');
-        marker.classList.add('timeline-marker');
-        marker.style.left = `${position}%`;
-        marker.textContent = year;
-        
-        // Ligne verticale pour chaque siècle
-        const verticalLine = document.createElement('div');
-        verticalLine.classList.add('century-line');
-        verticalLine.style.left = `${position}%`;
-        
-        timelineMarkersContainer.appendChild(marker);
-        timelineMarkersContainer.appendChild(verticalLine);
+/* Header styles */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 3rem;
+    color: var(--royal-blue);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    position: relative;
+    margin: 0 20px;
+}
+
+.fleur-de-lys {
+    width: 40px;
+    height: 40px;
+    background-color: var(--royal-blue);
+    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256,0c-12.4,169.9-27.3,207.6-64,224c7.6,6.9,13.4,16.3,13.4,28.6c0,20.1-16.3,36.4-36.4,36.4c-3.2,0-6.3-0.5-9.2-1.2c6.6,11.7,13.4,23.5,13.4,41.6c0,48.5-43.5,54.1-49.4,54.1c0,0,28.6,110.8,82.3,128c53.7-17.2,82.3-128,82.3-128c-5.9,0-49.4-5.7-49.4-54.1c0-18.1,6.7-29.9,13.4-41.6c-2.9,0.8-6,1.2-9.2,1.2c-20.1,0-36.4-16.3-36.4-36.4c0-12.3,5.8-21.7,13.4-28.6C283.3,207.6,268.4,169.9,256,0z"/></svg>') no-repeat center center;
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256,0c-12.4,169.9-27.3,207.6-64,224c7.6,6.9,13.4,16.3,13.4,28.6c0,20.1-16.3,36.4-36.4,36.4c-3.2,0-6.3-0.5-9.2-1.2c6.6,11.7,13.4,23.5,13.4,41.6c0,48.5-43.5,54.1-49.4,54.1c0,0,28.6,110.8,82.3,128c53.7-17.2,82.3-128,82.3-128c-5.9,0-49.4-5.7-49.4-54.1c0-18.1,6.7-29.9,13.4-41.6c-2.9,0.8-6,1.2-9.2,1.2c-20.1,0-36.4-16.3-36.4-36.4c0-12.3,5.8-21.7,13.4-28.6C283.3,207.6,268.4,169.9,256,0z"/></svg>') no-repeat center center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+
+.subtitle {
+    font-family: 'Lora', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--royal-purple);
+    margin-bottom: 20px;
+}
+
+/* Controls styles */
+.controls-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.control-btn, .dynasty-btn, .view-btn, .royal-btn {
+    padding: 8px 12px;
+    background-color: var(--royal-blue);
+    color: var(--text-light);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.control-btn:hover, .dynasty-btn:hover, .view-btn:hover, .royal-btn:hover {
+    background-color: var(--royal-gold);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.dynasty-filter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.dynasty-btn[data-dynasty="capet"] { background-color: var(--capet-color); }
+.dynasty-btn[data-dynasty="valois"] { background-color: var(--valois-color); }
+.dynasty-btn[data-dynasty="bourbon"] { background-color: var(--bourbon-color); }
+.dynasty-btn[data-dynasty="orleans"] { background-color: var(--orleans-color); }
+.dynasty-btn[data-dynasty="bonaparte"] { background-color: var(--bonaparte-color); }
+.dynasty-btn[data-dynasty="all"] { background-color: var(--royal-blue); }
+
+.dynasty-btn.active, .view-btn.active {
+    outline: 2px solid var(--royal-gold);
+    font-weight: 600;
+}
+
+.view-mode {
+    display: flex;
+    gap: 5px;
+}
+
+/* Timeline styles */
+.timeline-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+#timeline-markers {
+    width: 100%;
+    height: 40px;
+    background-color: rgba(240, 240, 240, 0.5);
+    position: relative;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.timeline-marker {
+    position: absolute;
+    bottom: 0;
+    transform: translateX(-50%);
+    text-align: center;
+    padding: 5px;
+    font-size: 12px;
+    color: var(--text-dark);
+    z-index: 1;
+}
+
+.century-line {
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%);
+}
+
+#dynasty-blocks {
+    width: 100%;
+    height: 25px;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.dynasty-block {
+    position: absolute;
+    height: 100%;
+    border-radius: 4px;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.dynasty-block:hover {
+    opacity: 0.9;
+}
+
+.dynasty-block[data-dynastie="capet"] { background-color: var(--capet-color); }
+.dynasty-block[data-dynastie="valois"] { background-color: var(--valois-color); }
+.dynasty-block[data-dynastie="bourbon"] { background-color: var(--bourbon-color); }
+.dynasty-block[data-dynastie="orleans"] { background-color: var(--orleans-color); }
+.dynasty-block[data-dynastie="bonaparte"] { background-color: var(--bonaparte-color); }
+
+.reign-highlight {
+    position: absolute;
+    height: 100%;
+    background-color: rgba(255, 215, 0, 0.3);
+    z-index: 5;
+    border: 2px solid rgba(255, 215, 0, 0.8);
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+}
+
+#timeline-zoom-area {
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+#timeline {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 0;
+    width: 100%;
+    min-width: 600px;
+    transition: transform 0.3s ease;
+}
+
+.king-card {
+    background-color: var(--dark-parchment);
+    border-radius: 8px;
+    padding: 15px;
+    width: calc((100% - 6 * 10px) / 6);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.king-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+}
+
+.king-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.king-card.active {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--royal-gold);
+}
+
+.king-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.king-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.king-card[data-dynastie="capet"]::before { background-color: var(--capet-color); }
+.king-card[data-dynastie="valois"]::before { background-color: var(--valois-color); }
+.king-card[data-dynastie="bourbon"]::before { background-color: var(--bourbon-color); }
+.king-card[data-dynastie="orleans"]::before { background-color: var(--orleans-color); }
+.king-card[data-dynastie="bonaparte"]::before { background-color: var(--bonaparte-color); }
+
+.king-portrait {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid var(--royal-gold);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    background-color: #f5f5f5;
+}
+
+/* King details styles */
+.content-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.king-details {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: relative;
+    min-height: 300px;
+}
+
+.king-details h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--royal-blue);
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 3px solid var(--royal-gold);
+    padding-bottom: 10px;
+}
+
+.king-details .placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 200px;
+    color: #777;
+}
+
+.crown-icon {
+    width: 60px;
+    height: 60px;
+    background-color: var(--royal-gold);
+    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48 0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8 0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.2 7.7-.6l74.9 136.2c1.4 2.6 3.1 5 4.7 7.4 9.4 13.7 23.7 22.9 39.7 26 16.1 3.2 32.9-.3 46.9-9.5l27.8-18.1c5.2-3.4 12.5-.8 14.3 5.3l.1.4c2.4 8.2 8.2 15 15.9 18.8 5.1 2.5 10.1 4.3 16.2 4.3 9.9 0 19.7-4.2 26.6-12.3l69.6-81.4c1.9-2.3 5.3-2.6 7.7-.6l68.9 72c2.9 3 6.3 4.3 9.8 4.3 6.4 0 12.3-4.3 14-10.7l17.9-65.3c.7-2.5 2.9-4.3 5.4-4.4l71.8-3.5c4.2-.2 7.1-4.1 6.6-8.2l-25.3-191.5c2.2-.8 4.4-1.7 6.4-2.9l62.2 172.6c.3 1 .7 2 1.1 2.9.8 1.9 1.6 3.8 2.5 5.5 9.4 17.4 24.9 30 43 34.8 13.7 3.6 27.5 2.7 40.1-2.5 6-2.4 11.6-5.9 16.5-10.2V464h16c8.8 0 16-7.2 16-16V176c.1-26.5-21.4-48-47.9-48z"/></svg>') no-repeat center center;
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48 0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8 0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.2 7.7-.6l74.9 136.2c1.4 2.6 3.1 5 4.7 7.4 9.4 13.7 23.7 22.9 39.7 26 16.1 3.2 32.9-.3 46.9-9.5l27.8-18.1c5.2-3.4 12.5-.8 14.3 5.3l.1.4c2.4 8.2 8.2 15 15.9 18.8 5.1 2.5 10.1 4.3 16.2 4.3 9.9 0 19.7-4.2 26.6-12.3l69.6-81.4c1.9-2.3 5.3-2.6 7.7-.6l68.9 72c2.9 3 6.3 4.3 9.8 4.3 6.4 0 12.3-4.3 14-10.7l17.9-65.3c.7-2.5 2.9-4.3 5.4-4.4l71.8-3.5c4.2-.2 7.1-4.1 6.6-8.2l-25.3-191.5c2.2-.8 4.4-1.7 6.4-2.9l62.2 172.6c.3 1 .7 2 1.1 2.9.8 1.9 1.6 3.8 2.5 5.5 9.4 17.4 24.9 30 43 34.8 13.7 3.6 27.5 2.7 40.1-2.5 6-2.4 11.6-5.9 16.5-10.2V464h16c8.8 0 16-7.2 16-16V176c.1-26.5-21.4-48-47.9-48z"/></svg>') no-repeat center center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    margin-bottom: 15px;
+    opacity: 0.6;
+}
+
+.king-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.king-info p {
+    margin: 8px 0;
+    font-size: 1rem;
+}
+
+.king-info strong {
+    color: var(--royal-blue);
+}
+
+.anecdote-box {
+    background-color: var(--light-parchment);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    grid-column: 1 / -1;
+}
+
+.anecdote-box h3 {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--royal-purple);
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.anecdote-box p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    line-height: 1.8;
+    position: relative;
+    padding: 0 15px;
+}
+
+.anecdote-box p::before,
+.anecdote-box p::after {
+    content: '"';
+    font-size: 2rem;
+    color: var(--royal-gold);
+    position: absolute;
+}
+
+.anecdote-box p::before {
+    top: -15px;
+    left: -5px;
+}
+
+.anecdote-box p::after {
+    bottom: -25px;
+    right: -5px;
+}
+
+/* Quiz styles */
+.quiz-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.quiz-container h2 {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--royal-blue);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#quiz-question {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    font-weight: 500;
+    background-color: var(--light-parchment);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+#quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.quiz-option {
+    padding: 12px 15px;
+    background-color: white;
+    border: 2px solid var(--royal-blue);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quiz-option:hover {
+    background-color: var(--light-parchment);
+}
+
+.quiz-option.correct {
+    background-color: rgba(46, 204, 113, 0.3);
+    border-color: #27ae60;
+}
+
+.quiz-option.incorrect {
+    background-color: rgba(231, 76, 60, 0.3);
+    border-color: #c0392b;
+}
+
+#quiz-result
+#quiz-result {
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+}
+
+#quiz-result.correct {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #27ae60;
+}
+
+#quiz-result.incorrect {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #c0392b;
+}
+
+/* Dynasty legend styles */
+.dynasty-legend {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.dynasty-legend h3 {
+    font-family: 'Cormorant Garamond', serif;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--royal-blue);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.legend-color.capet { background-color: var(--capet-color); }
+.legend-color.valois { background-color: var(--valois-color); }
+.legend-color.bourbon { background-color: var(--bourbon-color); }
+.legend-color.orleans { background-color: var(--orleans-color); }
+.legend-color.bonaparte { background-color: var(--bonaparte-color); }
+
+/* Utility classes */
+.hidden {
+    display: none;
+}
+
+/* Card view mode */
+#timeline.card-view-mode {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+#timeline.card-view-mode .king-card {
+    width: 100%;
+    padding: 20px;
+}
+
+#timeline.card-view-mode .king-portrait {
+    width: 120px;
+    height: 120px;
+}
+
+/* Footer styles */
+footer {
+    background-color: var(--royal-blue);
+    color: var(--text-light);
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 1024px) {
+    .king-card {
+        width: calc((100% - 4 * 10px) / 4);
     }
 }
 
-function createDynastyBlocks() {
-    const dynastyBlocksContainer = document.getElementById('dynasty-blocks');
-    dynastyBlocksContainer.innerHTML = '';
-
-    const startYear = 987;
-    const endYear = 1900;
-
-    // Définir toutes les dynasties
-    const dynasties = [
-        { name: 'capet', start: 987, end: 1328, label: 'Capétiens' },
-        { name: 'valois', start: 1328, end: 1589, label: 'Valois' },
-        { name: 'bourbon', start: 1589, end: 1792, label: 'Bourbons' },
-        { name: 'bonaparte', start: 1804, end: 1814, label: 'Bonaparte (1er Empire)' },
-        { name: 'bourbon', start: 1814, end: 1830, label: 'Bourbons (Restauration)' },
-        { name: 'orleans', start: 1830, end: 1848, label: 'Orléans' },
-        { name: 'bonaparte', start: 1852, end: 1870, label: 'Bonaparte (2nd Empire)' }
-    ];
-
-    // Créer les blocs pour chaque dynastie
-    dynasties.forEach(dynasty => {
-        const left = ((dynasty.start - startYear) / (endYear - startYear)) * 100;
-        const width = ((dynasty.end - dynasty.start) / (endYear - startYear)) * 100;
-
-        const block = document.createElement('div');
-        block.classList.add('dynasty-block');
-        block.setAttribute('data-dynastie', dynasty.name);
-        block.style.left = `${left}%`;
-        block.style.width = `${width}%`;
-        block.title = `${dynasty.label} (${dynasty.start}-${dynasty.end})`;
-
-        dynastyBlocksContainer.appendChild(block);
-    });
-}
-
-function createTimeline() {
-    const timeline = document.getElementById('timeline');
-    timeline.innerHTML = '';
-    
-    createTimelineMarkers();
-    createDynastyBlocks();
-
-    // Création des cartes de rois avec des portraits par défaut
-    roisDeFrance.forEach((roi, index) => {
-        const card = document.createElement('div');
-        card.classList.add('king-card');
-        card.setAttribute('data-dynastie', roi.dynastie);
-        card.setAttribute('data-index', index);
-        
-        // Essayons de charger un portrait (si disponible)
-        const portraitPath = `images/${roi.nom.toLowerCase().replace(/ /g, '_')}.jpg`;
-        const defaultPortraitPath = 'images/default_king.jpg';
-        
-        // Structure HTML interne de la carte
-        card.innerHTML = `
-            <img src="${portraitPath}" alt="${roi.nom}" class="king-portrait" onerror="this.src='${defaultPortraitPath}'">
-            <h3>${roi.nom}</h3>
-            <p>${roi.debut} - ${roi.fin}</p>
-        `;
-        
-        // Ajouter un événement de clic sur la carte
-        card.addEventListener('click', () => {
-            // Retirer la classe active de toutes les cartes
-            document.querySelectorAll('.king-card').forEach(c => c.classList.remove('active'));
-            // Ajouter la classe active à la carte cliquée
-            card.classList.add('active');
-            // Afficher les détails du roi
-            showKingDetails(roi);
-            // Mettre en évidence le règne sur la frise
-            highlightReign(roi);
-        });
-        
-        timeline.appendChild(card);
-    });
-}
-
-function showKingDetails(roi) {
-    const detailsContainer = document.getElementById('king-details');
-    
-    // Déterminer la couleur de la dynastie pour le style
-    let dynastyColor;
-    switch(roi.dynastie) {
-        case 'capet': dynastyColor = 'var(--capet-color)'; break;
-        case 'valois': dynastyColor = 'var(--valois-color)'; break;
-        case 'bourbon': dynastyColor = 'var(--bourbon-color)'; break;
-        case 'orleans': dynastyColor = 'var(--orleans-color)'; break;
-        case 'bonaparte': dynastyColor = 'var(--bonaparte-color)'; break;
-        default: dynastyColor = '#333';
+@media screen and (max-width: 768px) {
+    .main-container {
+        padding: 10px;
     }
-    
-    // Essayons de charger un portrait (si disponible)
-    const portraitPath = `images/${roi.nom.toLowerCase().replace(/ /g, '_')}.jpg`;
-    const defaultPortraitPath = 'images/default_king.jpg';
-    
-    // Contenu HTML détaillé
-    detailsContainer.innerHTML = `
-        <h2 style="border-bottom-color: ${dynastyColor};">${roi.nom}</h2>
-        <div class="king-info">
-            <div class="king-portrait-large">
-                <img src="${portraitPath}" alt="${roi.nom}" 
-                     onerror="this.src='${defaultPortraitPath}'" 
-                     style="max-width: 200px; border-radius: 10px; border: 3px solid ${dynastyColor};">
-            </div>
-            <div class="king-details-text">
-                <p><strong>Règne :</strong> ${roi.debut} à ${roi.fin} (${roi.fin - roi.debut} ans)</p>
-                <p><strong>Naissance :</strong> ${roi.naissance}</p>
-                <p><strong>Décès :</strong> ${roi.mort}</p>
-                <p><strong>Dynastie :</strong> ${roi.dynastie.charAt(0).toUpperCase() + roi.dynastie.slice(1)}</p>
-                <p><strong>Parents :</strong> ${roi.parents}</p>
-                <p><strong>Épouse(s) :</strong> ${roi.epouses.join(', ')}</p>
-            </div>
-            <div class="anecdote-box">
-                <h3>Anecdote historique</h3>
-                <p>${roi.anecdote}</p>
-            </div>
-        </div>
-    `;
-    
-    // Animation de transition
-    detailsContainer.style.opacity = '0';
-    setTimeout(() => {
-        detailsContainer.style.opacity = '1';
-    }, 50);
-}
 
-function highlightReign(roi) {
-    const timelineMarkers = document.getElementById('timeline-markers');
-    
-    // Supprimer toute mise en évidence existante
-    const existingHighlight = timelineMarkers.querySelector('.reign-highlight');
-    if (existingHighlight) existingHighlight.remove();
-    
-    // Calculer la position et la largeur
-    const startYear = 987;
-    const endYear = 1900;
-    const left = ((roi.debut - startYear) / (endYear - startYear)) * 100;
-    const width = ((roi.fin - roi.debut) / (endYear - startYear)) * 100;
-    
-    // Créer le nouvel élément de mise en évidence
-    const highlight = document.createElement('div');
-    highlight.classList.add('reign-highlight');
-    highlight.style.left = `${left}%`;
-    highlight.style.width = `${width}%`;
-    
-    // Ajouter une info-bulle
-    highlight.title = `${roi.nom}: ${roi.debut}-${roi.fin}`;
-    
-    timelineMarkers.appendChild(highlight);
-}
+    h1 {
+        font-size: 2rem;
+    }
 
-function filterKings() {
-    const kingCards = document.querySelectorAll('.king-card');
-    
-    kingCards.forEach(card => {
-        if (currentDynasty === 'all' || card.getAttribute('data-dynastie') === currentDynasty) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
+    .subtitle {
+        font-size: 1rem;
+    }
 
-function switchView(view) {
-    currentView = view;
-    
-    // Mettre à jour les boutons de vue
-    document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(`${view}-view`).classList.add('active');
-    
-    // Masquer tous les conteneurs
-    document.getElementById('timeline-container').classList.add('hidden');
-    document.getElementById('king-details').classList.add('hidden');
-    document.getElementById('quiz-container').classList.add('hidden');
-    
-    // Afficher le conteneur correspondant à la vue
-    switch(view) {
-        case 'timeline':
-            document.querySelector('.timeline-container').classList.remove('hidden');
-            document.getElementById('king-details').classList.remove('hidden');
-            break;
-        case 'card':
-            document.querySelector('.timeline-container').classList.remove('hidden');
-            document.getElementById('king-details').classList.remove('hidden');
-            // Modifier l'affichage pour une vue en cartes plus grande
-            document.getElementById('timeline').classList.add('card-view-mode');
-            break;
-        case 'quiz':
-            document.getElementById('quiz-container').classList.remove('hidden');
-            startQuiz();
-            break;
+    .controls-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .timeline-container {
+        padding: 15px 10px;
+    }
+
+    .king-card {
+        width: calc((100% - 2 * 10px) / 3);
+    }
+
+    .king-details {
+        padding: 15px;
+    }
+
+    .king-info {
+        grid-template-columns: 1fr;
+    }
+
+    #timeline.card-view-mode {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 }
 
-// Fonctions pour le quiz
-function generateQuizQuestions() {
-    quizQuestions = [
-        {
-            question: "Quel roi a régné le plus longtemps en France?",
-            options: ["Louis XIV", "Napoléon Bonaparte", "François Ier", "Louis XV"],
-            correct: 0
-        },
-        {
-            question: "Qui était le premier roi de la dynastie capétienne?",
-            options: ["Clovis", "Hugues Capet", "Robert II le Pieux", "Charlemagne"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a été guillotiné pendant la Révolution française?",
-            options: ["Louis XV", "Louis XVI", "Louis XVIII", "Charles X"],
-            correct: 1
-        },
-        {
-            question: "Quelle dynastie a succédé aux Capétiens directs?",
-            options: ["Les Bourbons", "Les Valois", "Les Bonaparte", "Les Orléans"],
-            correct: 1
-        },
-        {
-            question: "Quel roi est connu sous le nom de 'Saint Louis'?",
-            options: ["Louis VIII", "Louis IX", "Louis X", "Louis XIII"],
-            correct: 1
-        },
-        {
-            question: "Qui a construit le château de Versailles?",
-            options: ["François Ier", "Henri IV", "Louis XIII", "Louis XIV"],
-            correct: 3
-        },
-        {
-            question: "Quel roi est surnommé 'le Roi-Soleil'?",
-            options: ["Louis XIII", "Louis XIV", "Louis XV", "Louis XVI"],
-            correct: 1
-        },
-        {
-            question: "Quelle dynastie a régné le plus longtemps en France?",
-            options: ["Les Capétiens", "Les Valois", "Les Bourbons", "Les Bonaparte"],
-            correct: 0
-        }
-    ];
-    
-    // Mélanger les questions
-    quizQuestions = shuffleArray(quizQuestions);
-}
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
     }
-    return array;
-}
 
-function startQuiz() {
-    currentQuizQuestion = 0;
-    quizScore = 0;
-    showQuizQuestion();
-}
-
-function showQuizQuestion() {
-    if (currentQuizQuestion >= quizQuestions.length) {
-        // Quiz terminé, afficher les résultats
-        showQuizResults();
-        return;
+    .fleur-de-lys {
+        width: 25px;
+        height: 25px;
     }
-    
-    const question = quizQuestions[currentQuizQuestion];
-    const questionElement = document.getElementById('quiz-question');
-    const optionsElement = document.getElementById('quiz-options');
-    const resultElement = document.getElementById('quiz-result');
-    
-    // Effacer les résultats précédents
-    resultElement.innerHTML = '';
-    resultElement.className = '';
-    
-    // Afficher la question
-    questionElement.textContent = `${currentQuizQuestion + 1}. ${question.question}`;
-    
-    // Afficher les options
-    optionsElement.innerHTML = '';
-    question.options.forEach((option, index) => {
-        const optionElement = document.createElement('div');
-        optionElement.classList.add('quiz-option');
-        optionElement.textContent = option;
-        optionElement.addEventListener('click', () => checkAnswer(index));
-        optionsElement.appendChild(optionElement);
-    });
-    
-    // Masquer le bouton "Question suivante"
-    document.getElementById('next-question').style.display = 'none';
-}
 
-function checkAnswer(selectedIndex) {
-    const question = quizQuestions[currentQuizQuestion];
-    const optionElements = document.querySelectorAll('.quiz-option');
-    const resultElement = document.getElementById('quiz-result');
-    
-    // Désactiver les clics sur les options
-    optionElements.forEach(option => {
-        option.style.pointerEvents = 'none';
-    });
-    
-    // Marquer la réponse correcte et la réponse de l'utilisateur
-    optionElements[question.correct].classList.add('correct');
-    if (selectedIndex !== question.correct) {
-        optionElements[selectedIndex].classList.add('incorrect');
+    .king-card {
+        width: calc((100% - 10px) / 2);
     }
-    
-    // Vérifier si la réponse est correcte
-    if (selectedIndex === question.correct) {
-        resultElement.textContent = "Correct! Bien joué!";
-        resultElement.className = 'correct';
-        quizScore++;
-    } else {
-        resultElement.textContent = `Incorrect. La bonne réponse est: ${question.options[question.correct]}`;
-        resultElement.className = 'incorrect';
+
+    .dynasty-filter span {
+        display: none;
     }
-    
-    // Afficher le bouton "Question suivante"
-    document.getElementById('next-question').style.display = 'block';
-}
 
-function showNextQuizQuestion() {
-    currentQuizQuestion++;
-    showQuizQuestion();
-}
-
-function showQuizResults() {
-    const quizContainer = document.getElementById('quiz-container');
-    const percentage = Math.round((quizScore / quizQuestions.length) * 100);
-    
-    let message;
-    if (percentage >= 80) {
-        message = "Excellent! Vous êtes un véritable historien royal!";
-    } else if (percentage >= 60) {
-        message = "Bien joué! Vous connaissez bien l'histoire des rois de France.";
-    } else if (percentage >= 40) {
-        message = "Pas mal! Il vous reste quelques rois à découvrir.";
-    } else {
-        message = "Vous avez encore beaucoup à apprendre sur les rois de France!";
+    .timeline-container {
+        padding: 10px 5px;
     }
-    
-    quizContainer.innerHTML = `
-        <h2>Résultats du Quiz Royal</h2>
-        <div class="quiz-results">
-            <p>Votre score: ${quizScore} / ${quizQuestions.length} (${percentage}%)</p>
-            <p>${message}</p>
-            <button id="restart-quiz" class="royal-btn">Recommencer le quiz</button>
-            <button id="return-timeline" class="royal-btn">Retour à la chronologie</button>
-        </div>
-    `;
-    
-    // Ajouter des écouteurs d'événements pour les boutons
-    document.getElementById('restart-quiz').addEventListener('click', startQuiz);
-    document.getElementById('return-timeline').addEventListener('click', () => switchView('timeline'));
-}
 
-// Initialisation
-document.addEventListener('DOMContentLoaded', initApp);
+    #timeline-markers {
+        height: 30px;
+    }
+
+    .timeline-marker {
+        font-size: 10px;
+    }
+}
