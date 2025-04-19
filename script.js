@@ -190,22 +190,37 @@ function setupEventListeners() {
         });
     });
 
-    // Boutons de vue
-    document.getElementById('timeline-view').addEventListener('click', function() {
-        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-        document.getElementById('timeline').classList.remove('card-view-mode');
-    });
+    // Fonction pour changer de vue
+function switchView(view) {
+    currentView = view;
     
-    document.getElementById('card-view').addEventListener('click', function() {
-        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-        document.getElementById('timeline').classList.add('card-view-mode');
-    });
+    // Mettre à jour les boutons de vue
+    document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`${view}-view`).classList.add('active');
     
-    document.getElementById('quiz-view').addEventListener('click', function() {
-        alert("Le mode quiz n'est pas disponible dans cette démo, mais sera fonctionnel dans la version complète.");
-    });
+    // Masquer tous les contenus
+    document.querySelector('.timeline-container').classList.add('hidden');
+    document.getElementById('king-details').classList.add('hidden');
+    document.getElementById('quiz-container').classList.add('hidden');
+    
+    // Afficher le contenu correspondant à la vue
+    switch(view) {
+        case 'timeline':
+            document.querySelector('.timeline-container').classList.remove('hidden');
+            document.getElementById('king-details').classList.remove('hidden');
+            document.getElementById('timeline').classList.remove('card-view-mode');
+            break;
+        case 'card':
+            document.querySelector('.timeline-container').classList.remove('hidden');
+            document.getElementById('king-details').classList.remove('hidden');
+            document.getElementById('timeline').classList.add('card-view-mode');
+            break;
+        case 'quiz':
+            document.getElementById('quiz-container').classList.remove('hidden');
+            startQuiz();
+            break;
+    }
+}
 
     // Gérer le bouton 'Question suivante' du quiz si présent
     const nextQuestionBtn = document.getElementById('next-question');
@@ -653,11 +668,110 @@ function generateQuizQuestions() {
     // Mélanger les questions
     quizQuestions = shuffleArray(quizQuestions);
 }
-
-function showNextQuizQuestion() {
-    // Fonction simplifiée pour éviter des erreurs
-    console.log("Question suivante demandée");
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
-// Initialiser l'application au chargement
-document.addEventListener('DOMContentLoaded', initApp);
+function startQuiz() {
+    currentQuizQuestion = 0;
+    quizScore = 0;
+    showQuizQuestion();
+}
+function showNextQuizQuestion() {
+    currentQuizQuestion++;
+    showQuizQuestion();
+}
+function showQuizQuestion() {
+    if (currentQuizQuestion >= quizQuestions.length) {
+        // Quiz terminé, afficher les résultats
+        showQuizResults();
+        return;
+    }
+    
+    const question = quizQuestions[currentQuizQuestion];
+    const questionElement = document.getElementById('quiz-question');
+    const optionsElement = document.getElementById('quiz-options');
+    const resultElement = document.getElementById('quiz-result');
+    
+    // Effacer les résultats précédents
+    resultElement.innerHTML = '';
+    resultElement.className = '';
+    
+    // Afficher la question
+    questionElement.textContent = `${currentQuizQuestion + 1}. ${question.question}`;
+    
+    // Afficher les options
+    optionsElement.innerHTML = '';
+    question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.classList.add('quiz-option');
+        optionElement.textContent = option;
+        optionElement.addEventListener('click', () => checkAnswer(index));
+        optionsElement.appendChild(optionElement);
+    });
+    
+    // Masquer le bouton "Question suivante"
+    document.getElementById('next-question').style.display = 'none';
+}
+function checkAnswer(selectedIndex) {
+    const question = quizQuestions[currentQuizQuestion];
+    const optionElements = document.querySelectorAll('.quiz-option');
+    const resultElement = document.getElementById('quiz-result');
+    
+    // Désactiver les clics sur les options
+    optionElements.forEach(option => {
+        option.style.pointerEvents = 'none';
+    });
+    
+    // Marquer la réponse correcte et la réponse de l'utilisateur
+    optionElements[question.correct].classList.add('correct');
+    if (selectedIndex !== question.correct) {
+        optionElements[selectedIndex].classList.add('incorrect');
+    }
+    
+    // Vérifier si la réponse est correcte
+    if (selectedIndex === question.correct) {
+        resultElement.textContent = "Correct! Bien joué!";
+        resultElement.className = 'correct';
+        quizScore++;
+    } else {
+        resultElement.textContent = `Incorrect. La bonne réponse est: ${question.options[question.correct]}`;
+        resultElement.className = 'incorrect';
+    }
+    
+    // Afficher le bouton "Question suivante"
+    document.getElementById('next-question').style.display = 'block';
+}
+function showQuizResults() {
+    const quizContainer = document.getElementById('quiz-container');
+    const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+    
+    let message;
+    if (percentage >= 80) {
+        message = "Excellent! Vous êtes un véritable historien royal!";
+    } else if (percentage >= 60) {
+        message = "Bien joué! Vous connaissez bien l'histoire des rois de France.";
+    } else if (percentage >= 40) {
+        message = "Pas mal! Il vous reste quelques rois à découvrir.";
+    } else {
+        message = "Vous avez encore beaucoup à apprendre sur les rois de France!";
+    }
+    
+    quizContainer.innerHTML = `
+        <h2>Résultats du Quiz Royal</h2>
+        <div class="quiz-results">
+            <p>Votre score: ${quizScore} / ${quizQuestions.length} (${percentage}%)</p>
+            <p>${message}</p>
+            <button id="restart-quiz" class="royal-btn">Recommencer le quiz</button>
+            <button id="return-timeline" class="royal-btn">Retour à la chronologie</button>
+        </div>
+    `;
+    
+    // Ajouter des écouteurs d'événements pour les boutons
+    document.getElementById('restart-quiz').addEventListener('click', startQuiz);
+    document.getElementById('return-timeline').addEventListener('click', () => switchView('timeline'));
+}
