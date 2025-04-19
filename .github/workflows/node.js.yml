@@ -1,27 +1,21 @@
-name: Deploy Website
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    # Supprimez ou modifiez la configuration de Node.js si vous n'utilisez pas de packages npm
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'npm'
-        cache-dependency-path: '**/package.json' # Changez cette ligne
-    # Supprimez l'installation des dépendances ou ajoutez cette ligne
-    - run: echo "Skipping npm dependencies"
-    
-    # Ajoutez des étapes pour déployer votre site
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        branch: gh-pages
-        folder: .
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .
+          branch: gh-pages
