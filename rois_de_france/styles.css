@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronologie Royale de France (987-1870)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lora:wght@400;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <div class="title-container">
+                <div class="fleur-de-lys left"></div>
+                <h1>Chronologie Royale de France</h1>
+                <div class="fleur-de-lys right"></div>
+            </div>
+            <p class="subtitle">Découvrez l'histoire des monarques français de 987 à 1870</p>
+        </header>
+
+        <div class="controls-container">
+            <div class="timeline-controls">
+                <button id="zoom-in" class="control-btn">+</button>
+                <button id="zoom-out" class="control-btn">-</button>
+                <button id="reset-view" class="control-btn">↺</button>
+            </div>
+            <div class="dynasty-filter">
+                <span>Filtrer par dynastie:</span>
+                <div class="filter-buttons">
+                    <button class="dynasty-btn" data-dynasty="all">Toutes</button>
+                    <button class="dynasty-btn" data-dynasty="capet">Capétiens</button>
+                    <button class="dynasty-btn" data-dynasty="valois">Valois</button>
+                    <button class="dynasty-btn" data-dynasty="bourbon">Bourbons</button>
+                    <button class="dynasty-btn" data-dynasty="bonaparte">Bonaparte</button>
+                    <button class="dynasty-btn" data-dynasty="orleans">Orléans</button>
+                </div>
+            </div>
+            <div class="view-mode">
+                <button id="timeline-view" class="view-btn active">Chronologie</button>
+                <button id="card-view" class="view-btn">Cartes</button>
+                <button id="quiz-view" class="view-btn">Quiz</button>
+            </div>
+        </div>
+
+        <div class="timeline-container">
+            <div id="timeline-markers"></div>
+            <div id="dynasty-blocks" class="dynasty-blocks"></div>
+            <div id="timeline-zoom-area">
+                <div id="timeline"></div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div id="king-details" class="king-details">
+                <div class="placeholder">
+                    <div class="crown-icon"></div>
+                    <p>Sélectionnez un monarque pour voir les détails</p>
+                </div>
+            </div>
+            
+            <div id="quiz-container" class="quiz-container hidden">
+                <h2>Quiz Royal</h2>
+                <div id="quiz-question"></div>
+                <div id="quiz-options"></div>
+                <div id="quiz-result"></div>
+                <button id="next-question" class="royal-btn">Question suivante</button>
+            </div>
+        </div>
+
+        <div id="dynasty-legend" class="dynasty-legend">
+            <h3>Dynasties</h3>
+            <div class="legend-item">
+                <span class="legend-color capet"></span>
+                <span>Capétiens</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color valois"></span>
+                <span>Valois</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color bourbon"></span>
+                <span>Bourbons</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color orleans"></span>
+                <span>Orléans</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color bonaparte"></span>
+                <span>Bonaparte</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 - Chronologie Royale de France - Tous droits réservés</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+function updateZoom() {
+    const timeline = document.getElementById('timeline');
+    timeline.style.transform = `scale(${zoomLevel})`;
+    timeline.style.transformOrigin = 'center top';
+}
+
+// Boutons de contrôle de zoom
+document.getElementById('zoom-in').addEventListener('click', () => {
+    zoomLevel = Math.min(zoomLevel + 0.2, 2);
+    updateZoom();
+});
+
+document.getElementById('zoom-out').addEventListener('click', () => {
+    zoomLevel = Math.max(zoomLevel - 0.2, 0.6);
+    updateZoom();
+});
+
+document.getElementById('reset-view').addEventListener('click', () => {
+    zoomLevel = 1;
+    updateZoom();
+});
+
+// Filtres de dynastie
+const dynastyButtons = document.querySelectorAll('.dynasty-btn');
+dynastyButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        currentDynasty = button.getAttribute('data-dynasty');
+        // Activer le bouton sélectionné visuellement
+        dynastyButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        filterKings();
+    });
+});
+
+// Boutons de vue
+document.getElementById('timeline-view').addEventListener('click', () => switchView('timeline'));
+document.getElementById('card-view').addEventListener('click', () => switchView('card'));
+document.getElementById('quiz-view').addEventListener('click', () => switchView('quiz'));
+
+// Quiz
+document.getElementById('next-question').addEventListener('click', showNextQuizQuestion);
+}
+
+function createTimelineMarkers() {
+    const timelineMarkersContainer = document.getElementById('timeline-markers');
+    timelineMarkersContainer.innerHTML = '';
+
+    // Années de début et de fin pour la chronologie
+    const startYear = 987;
+    const endYear = 1900;
+
+    // Créer des marqueurs pour chaque siècle
+    for (let year = 1000; year <= endYear; year += 100) {
+        const position = ((year - startYear) / (endYear - startYear)) * 100;
+        
+        // Marqueur d'année
+        const marker = document.createElement('div');
+        marker.classList.add('timeline-marker');
+        marker.style.left = `${position}%`;
+        marker.textContent = year;
+        
+        // Ligne verticale pour chaque siècle
+        const verticalLine = document.createElement('div');
+        verticalLine.classList.add('century-line');
+        verticalLine.style.left = `${position}%`;
+        
+        timelineMarkersContainer.appendChild(marker);
+        timelineMarkersContainer.appendChild(verticalLine);
+    }
+}
+
+function createDynastyBlocks() {
+    const dynastyBlocksContainer = document.getElementById('dynasty-blocks');
+    dynastyBlocksContainer.innerHTML = '';
+
+    const startYear = 987;
+    const endYear = 1900;
+
+    // Définir toutes les dynasties
+    const dynasties = [
+        { name: 'capet', start: 987, end: 1328, label: 'Capétiens' },
+        { name: 'valois', start: 1328, end: 1589, label: 'Valois' },
+        { name: 'bourbon', start: 1589, end: 1792, label: 'Bourbons' },
+        { name: 'bonaparte', start: 1804, end: 1814, label: 'Bonaparte (1er Empire)' },
+        { name: 'bourbon', start: 1814, end: 1830, label: 'Bourbons (Restauration)' },
+        { name: 'orleans', start: 1830, end: 1848, label: 'Orléans' },
+        { name: 'bonaparte', start: 1852, end: 1870, label: 'Bonaparte (2nd Empire)' }
+    ];
+
+    // Créer les blocs pour chaque dynastie
+    dynasties.forEach(dynasty => {
+        const left = ((dynasty.start - startYear) / (endYear - startYear)) * 100;
+        const width = ((dynasty.end - dynasty.start) / (endYear - startYear)) * 100;
+
+        const block = document.createElement('div');
+        block.classList.add('dynasty-block');
+        block.setAttribute('data-dynastie', dynasty.name);
+        block.style.left = `${left}%`;
+        block.style.width = `${width}%`;
+        block.title = `${dynasty.label} (${dynasty.start}-${dynasty.end})`;
+
+        dynastyBlocksContainer.appendChild(block);
+    });
+}
+
+function createTimeline() {
+    const timeline = document.getElementById('timeline');
+    timeline.innerHTML = '';
+    
+    createTimelineMarkers();
+    createDynastyBlocks();
+
+    // Création des cartes de rois avec des portraits par défaut
+    roisDeFrance.forEach((roi, index) => {
+        const card = document.createElement('div');
+        card.classList.add('king-card');
+        card.setAttribute('data-dynastie', roi.dynastie);
+        card.setAttribute('data-index', index);
+        
+        // Essayons de charger un portrait (si disponible)
+        const portraitPath = `images/${roi.nom.toLowerCase().replace(/ /g, '_')}.jpg`;
+        const defaultPortraitPath = 'images/default_king.jpg';
+        
+        // Structure HTML interne de la carte
+        card.innerHTML = `
+            <img src="${portraitPath}" alt="${roi.nom}" class="king-portrait" onerror="this.src='${defaultPortraitPath}'">
+            <h3>${roi.nom}</h3>
+            <p>${roi.debut} - ${roi.fin}</p>
+        `;
+        
+        // Ajouter un événement de clic sur la carte
+        card.addEventListener('click', () => {
+            // Retirer la classe active de toutes les cartes
+            document.querySelectorAll('.king-card').forEach(c => c.classList.remove('active'));
+            // Ajouter la classe active à la carte cliquée
+            card.classList.add('active');
+            // Afficher les détails du roi
+            showKingDetails(roi);
+            // Mettre en évidence le règne sur la frise
+            highlightReign(roi);
+        });
+        
+        timeline.appendChild(card);
+    });
+}
+
+function showKingDetails(roi) {
+    const detailsContainer = document.getElementById('king-details');
+    
+    // Déterminer la couleur de la dynastie pour le style
+    let dynastyColor;
+    switch(roi.dynastie) {
+        case 'capet': dynastyColor = 'var(--capet-color)'; break;
+        case 'valois': dynastyColor = 'var(--valois-color)'; break;
+        case 'bourbon': dynastyColor = 'var(--bourbon-color)'; break;
+        case 'orleans': dynastyColor = 'var(--orleans-color)'; break;
+        case 'bonaparte': dynastyColor = 'var(--bonaparte-color)'; break;
+        default: dynastyColor = '#333';
+    }
+    
+    // Essayons de charger un portrait (si disponible)
+    const portraitPath = `images/${roi.nom.toLowerCase().replace(/ /g, '_')}.jpg`;
+    const defaultPortraitPath = 'images/default_king.jpg';
+    
+    // Contenu HTML détaillé
+    detailsContainer.innerHTML = `
+        <h2 style="border-bottom-color: ${dynastyColor};">${roi.nom}</h2>
+        <div class="king-info">
+            <div class="king-portrait-large">
+                <img src="${portraitPath}" alt="${roi.nom}" 
+                     onerror="this.src='${defaultPortraitPath}'" 
+                     style="max-width: 200px; border-radius: 10px; border: 3px solid ${dynastyColor};">
+            </div>
+            <div class="king-details-text">
+                <p><strong>Règne :</strong> ${roi.debut} à ${roi.fin} (${roi.fin - roi.debut} ans)</p>
+                <p><strong>Naissance :</strong> ${roi.naissance}</p>
+                <p><strong>Décès :</strong> ${roi.mort}</p>
+                <p><strong>Dynastie :</strong> ${roi.dynastie.charAt(0).toUpperCase() + roi.dynastie.slice(1)}</p>
+                <p><strong>Parents :</strong> ${roi.parents}</p>
+                <p><strong>Épouse(s) :</strong> ${roi.epouses.join(', ')}</p>
+            </div>
+            <div class="anecdote-box">
+                <h3>Anecdote historique</h3>
+                <p>${roi.anecdote}</p>
+            </div>
+        </div>
+    `;
+    
+    // Animation de transition
+    detailsContainer.style.opacity = '0';
+    setTimeout(() => {
+        detailsContainer.style.opacity = '1';
+    }, 50);
+}
+
+function highlightReign(roi) {
+    const timelineMarkers = document.getElementById('timeline-markers');
+    
+    // Supprimer toute mise en évidence existante
+    const existingHighlight = timelineMarkers.querySelector('.reign-highlight');
+    if (existingHighlight) existingHighlight.remove();
+    
+    // Calculer la position et la largeur
+    const startYear = 987;
+    const endYear = 1900;
+    const left = ((roi.debut - startYear) / (endYear - startYear)) * 100;
+    const width = ((roi.fin - roi.debut) / (endYear - startYear)) * 100;
+    
+    // Créer le nouvel élément de mise en évidence
+    const highlight = document.createElement('div');
+    highlight.classList.add('reign-highlight');
+    highlight.style.left = `${left}%`;
+    highlight.style.width = `${width}%`;
+    
+    // Ajouter une info-bulle
+    highlight.title = `${roi.nom}: ${roi.debut}-${roi.fin}`;
+    
+    timelineMarkers.appendChild(highlight);
+}
+
+function filterKings() {
+    const kingCards = document.querySelectorAll('.king-card');
+    
+    kingCards.forEach(card => {
+        if (currentDynasty === 'all' || card.getAttribute('data-dynastie') === currentDynasty) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+function switchView(view) {
+    currentView = view;
+    
+    // Mettre à jour les boutons de vue
+    document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`${view}-view`).classList.add('active');
+    
+    // Masquer tous les conteneurs
+    document.getElementById('timeline-container').classList.add('hidden');
+    document.getElementById('king-details').classList.add('hidden');
+    document.getElementById('quiz-container').classList.add('hidden');
+    
+    // Afficher le conteneur correspondant à la vue
+    switch(view) {
+        case 'timeline':
+            document.querySelector('.timeline-container').classList.remove('hidden');
+            document.getElementById('king-details').classList.remove('hidden');
+            break;
+        case 'card':
+            document.querySelector('.timeline-container').classList.remove('hidden');
+            document.getElementById('king-details').classList.remove('hidden');
+            // Modifier l'affichage pour une vue en cartes plus grande
+            document.getElementById('timeline').classList.add('card-view-mode');
+            break;
+        case 'quiz':
+            document.getElementById('quiz-container').classList.remove('hidden');
+            startQuiz();
+            break;
+    }
+}
+
+// Fonctions pour le quiz
+function generateQuizQuestions() {
+    quizQuestions = [
+        {
+            question: "Quel roi a régné le plus longtemps en France?",
+            options: ["Louis XIV", "Napoléon Bonaparte", "François Ier", "Louis XV"],
+            correct: 0
+        },
+        {
+            question: "Qui était le premier roi de la dynastie capétienne?",
+            options: ["Clovis", "Hugues Capet", "Robert II le Pieux", "Charlemagne"],
+            correct: 1
+        },
+        {
+            question: "Quel roi a été guillotiné pendant la Révolution française?",
+            options: ["Louis XV", "Louis XVI", "Louis XVIII", "Charles X"],
+            correct: 1
+        },
+        {
+            question: "Quelle dynastie a succédé aux Capétiens directs?",
+            options: ["Les Bourbons", "Les Valois", "Les Bonaparte", "Les Orléans"],
+            correct: 1
+        },
+        {
+            question: "Quel roi est connu sous le nom de 'Saint Louis'?",
+            options: ["Louis VIII", "Louis IX", "Louis X", "Louis XIII"],
+            correct: 1
+        },
+        {
+            question: "Qui a construit le château de Versailles?",
+            options: ["François Ier", "Henri IV", "Louis XIII", "Louis XIV"],
+            correct: 3
+        },
+        {
+            question: "Quel roi est surnommé 'le Roi-Soleil'?",
+            options: ["Louis XIII", "Louis XIV", "Louis XV", "Louis XVI"],
+            correct: 1
+        },
+        {
+            question: "Quelle dynastie a régné le plus longtemps en France?",
+            options: ["Les Capétiens", "Les Valois", "Les Bourbons", "Les Bonaparte"],
+            correct: 0
+        }
+    ];
+    
+    // Mélanger les questions
+    quizQuestions = shuffleArray(quizQuestions);
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function startQuiz() {
+    currentQuizQuestion = 0;
+    quizScore = 0;
+    showQuizQuestion();
+}
+
+function showQuizQuestion() {
+    if (currentQuizQuestion >= quizQuestions.length) {
+        // Quiz terminé, afficher les résultats
+        showQuizResults();
+        return;
+    }
+    
+    const question = quizQuestions[currentQuizQuestion];
+    const questionElement = document.getElementById('quiz-question');
+    const optionsElement = document.getElementById('quiz-options');
+    const resultElement = document.getElementById('quiz-result');
+    
+    // Effacer les résultats précédents
+    resultElement.innerHTML = '';
+    resultElement.className = '';
+    
+    // Afficher la question
+    questionElement.textContent = `${currentQuizQuestion + 1}. ${question.question}`;
+    
+    // Afficher les options
+    optionsElement.innerHTML = '';
+    question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.classList.add('quiz-option');
+        optionElement.textContent = option;
+        optionElement.addEventListener('click', () => checkAnswer(index));
+        optionsElement.appendChild(optionElement);
+    });
+    
+    // Masquer le bouton "Question suivante"
+    document.getElementById('next-question').style.display = 'none';
+}
+
+function checkAnswer(selectedIndex) {
+    const question = quizQuestions[currentQuizQuestion];
+    const optionElements = document.querySelectorAll('.quiz-option');
+    const resultElement = document.getElementById('quiz-result');
+    
+    // Désactiver les clics sur les options
+    optionElements.forEach(option => {
+        option.style.pointerEvents = 'none';
+    });
+    
+    // Marquer la réponse correcte et la réponse de l'utilisateur
+    optionElements[question.correct].classList.add('correct');
+    if (selectedIndex !== question.correct) {
+        optionElements[selectedIndex].classList.add('incorrect');
+    }
+    
+    // Vérifier si la réponse est correcte
+    if (selectedIndex === question.correct) {
+        resultElement.textContent = "Correct! Bien joué!";
+        resultElement.className = 'correct';
+        quizScore++;
+    } else {
+        resultElement.textContent = `Incorrect. La bonne réponse est: ${question.options[question.correct]}`;
+        resultElement.className = 'incorrect';
+    }
+    
+    // Afficher le bouton "Question suivante"
+    document.getElementById('next-question').style.display = 'block';
+}
+
+function showNextQuizQuestion() {
+    currentQuizQuestion++;
+    showQuizQuestion();
+}
+
+function showQuizResults() {
+    const quizContainer = document.getElementById('quiz-container');
+    const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+    
+    let message;
+    if (percentage >= 80) {
+        message = "Excellent! Vous êtes un véritable historien royal!";
+    } else if (percentage >= 60) {
+        message = "Bien joué! Vous connaissez bien l'histoire des rois de France.";
+    } else if (percentage >= 40) {
+        message = "Pas mal! Il vous reste quelques rois à découvrir.";
+    } else {
+        message = "Vous avez encore beaucoup à apprendre sur les rois de France!";
+    }
+    
+    quizContainer.innerHTML = `
+        <h2>Résultats du Quiz Royal</h2>
+        <div class="quiz-results">
+            <p>Votre score: ${quizScore} / ${quizQuestions.length} (${percentage}%)</p>
+            <p>${message}</p>
+            <button id="restart-quiz" class="royal-btn">Recommencer le quiz</button>
+            <button id="return-timeline" class="royal-btn">Retour à la chronologie</button>
+        </div>
+    `;
+    
+    // Ajouter des écouteurs d'événements pour les boutons
+    document.getElementById('restart-quiz').addEventListener('click', startQuiz);
+    document.getElementById('return-timeline').addEventListener('click', () => switchView('timeline'));
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', initApp);
