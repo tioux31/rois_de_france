@@ -480,7 +480,39 @@ h1 {
     background-color: rgba(231, 76, 60, 0.2);
     color: #c0392b;
 }
+.quiz-results {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--light-parchment);
+    border-radius: 10px;
+    margin-top: 20px;
+}
 
+.quiz-results p {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.royal-btn {
+    background-color: var(--royal-blue);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin: 10px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.royal-btn:hover {
+    background-color: var(--royal-gold);
+    transform: translateY(-2px);
+}
+
+.hidden {
+    display: none;
+}
 /* Dynasty legend styles */
 .dynasty-legend {
     background-color: white;
