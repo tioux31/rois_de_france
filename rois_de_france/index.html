@@ -3,22 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rois de France : Une Chronologie Interactive</title>
+    <title>Chronologie Royale de France (987-1870)</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lora:wght@400;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Chronologie des Rois de France (987 - 1848)</h1>
-        
+    <div class="main-container">
+        <header>
+            <div class="title-container">
+                <div class="fleur-de-lys left"></div>
+                <h1>Chronologie Royale de France</h1>
+                <div class="fleur-de-lys right"></div>
+            </div>
+            <p class="subtitle">Découvrez l'histoire des monarques français de 987 à 1870</p>
+        </header>
+
+        <div class="controls-container">
+            <div class="timeline-controls">
+                <button id="zoom-in" class="control-btn">+</button>
+                <button id="zoom-out" class="control-btn">-</button>
+                <button id="reset-view" class="control-btn">↺</button>
+            </div>
+            <div class="dynasty-filter">
+                <span>Filtrer par dynastie:</span>
+                <div class="filter-buttons">
+                    <button class="dynasty-btn" data-dynasty="all">Toutes</button>
+                    <button class="dynasty-btn" data-dynasty="capet">Capétiens</button>
+                    <button class="dynasty-btn" data-dynasty="valois">Valois</button>
+                    <button class="dynasty-btn" data-dynasty="bourbon">Bourbons</button>
+                    <button class="dynasty-btn" data-dynasty="bonaparte">Bonaparte</button>
+                    <button class="dynasty-btn" data-dynasty="orleans">Orléans</button>
+                </div>
+            </div>
+            <div class="view-mode">
+                <button id="timeline-view" class="view-btn active">Chronologie</button>
+                <button id="card-view" class="view-btn">Cartes</button>
+                <button id="quiz-view" class="view-btn">Quiz</button>
+            </div>
+        </div>
+
         <div class="timeline-container">
             <div id="timeline-markers"></div>
             <div id="dynasty-blocks" class="dynasty-blocks"></div>
+            <div id="timeline-zoom-area">
+                <div id="timeline"></div>
+            </div>
         </div>
 
-        <div id="timeline"></div>
-        
-        <div id="king-details"></div>
+        <div class="content-area">
+            <div id="king-details" class="king-details">
+                <div class="placeholder">
+                    <div class="crown-icon"></div>
+                    <p>Sélectionnez un monarque pour voir les détails</p>
+                </div>
+            </div>
+            
+            <div id="quiz-container" class="quiz-container hidden">
+                <h2>Quiz Royal</h2>
+                <div id="quiz-question"></div>
+                <div id="quiz-options"></div>
+                <div id="quiz-result"></div>
+                <button id="next-question" class="royal-btn">Question suivante</button>
+            </div>
+        </div>
+
+        <div id="dynasty-legend" class="dynasty-legend">
+            <h3>Dynasties</h3>
+            <div class="legend-item">
+                <span class="legend-color capet"></span>
+                <span>Capétiens</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color valois"></span>
+                <span>Valois</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color bourbon"></span>
+                <span>Bourbons</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color orleans"></span>
+                <span>Orléans</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color bonaparte"></span>
+                <span>Bonaparte</span>
+            </div>
+        </div>
     </div>
+
+    <footer>
+        <p>© 2025 - Chronologie Royale de France - Tous droits réservés</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
