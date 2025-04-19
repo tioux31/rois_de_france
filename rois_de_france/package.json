@@ -1,9 +1,0 @@
-{
-  "name": "rois-de-france",
-  "version": "1.0.0",
-  "description": "Chronologie des Rois de France",
-  "scripts": {
-    "test": "echo \"No tests specified\""
-  },
-  "dependencies": {}
-}
