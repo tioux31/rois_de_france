@@ -498,3 +498,167 @@ h1 {
 .royal-btn {
     background-color: var(--royal-blue);
     color:
+
+    .royal-btn {
+    background-color: var(--royal-blue);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin: 10px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.royal-btn:hover {
+    background-color: var(--royal-gold);
+    transform: translateY(-2px);
+}
+
+/* Utility classes */
+.hidden {
+    display: none !important;
+}
+
+/* Card view mode */
+#timeline.card-view-mode {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+#timeline.card-view-mode .king-card {
+    width: 100%;
+    padding: 20px;
+}
+
+#timeline.card-view-mode .king-portrait {
+    width: 120px;
+    height: 120px;
+}
+
+/* Dynasty legend styles */
+.dynasty-legend {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.dynasty-legend h3 {
+    font-family: 'Cormorant Garamond', serif;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--royal-blue);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.legend-color.capet { background-color: var(--capet-color); }
+.legend-color.valois { background-color: var(--valois-color); }
+.legend-color.bourbon { background-color: var(--bourbon-color); }
+.legend-color.orleans { background-color: var(--orleans-color); }
+.legend-color.bonaparte { background-color: var(--bonaparte-color); }
+
+/* Footer styles */
+footer {
+    background-color: var(--royal-blue);
+    color: var(--text-light);
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 1024px) {
+    .king-card {
+        width: calc((100% - 40px) / 5);
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .king-card {
+        width: calc((100% - 30px) / 4);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .main-container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .controls-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .timeline-container {
+        padding: 15px 10px;
+    }
+
+    .king-card {
+        width: calc((100% - 20px) / 3);
+    }
+
+    .king-details {
+        padding: 15px;
+    }
+
+    .king-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .fleur-de-lys {
+        width: 25px;
+        height: 25px;
+    }
+
+    .king-card {
+        width: calc((100% - 10px) / 2);
+    }
+
+    .dynasty-filter span {
+        display: none;
+    }
+
+    .timeline-container {
+        padding: 10px 5px;
+    }
+
+    #timeline-markers {
+        height: 30px;
+    }
+
+    .timeline-marker {
+        font-size: 10px;
+    }
+}
