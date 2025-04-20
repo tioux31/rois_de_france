@@ -1,5 +1,3 @@
-// Au tout début de votre fichier script.js
-console.log("Script.js chargé avec succès!");
 
 // Variables globales
 let zoomLevel = 1;
@@ -8,6 +6,9 @@ let currentView = 'timeline';
 let currentQuizQuestion = 0;
 let quizScore = 0;
 let quizQuestions = [];
+
+// Au tout début de votre fichier script.js
+console.log("Script.js chargé avec succès!");
 
 // Test de base
 document.addEventListener('DOMContentLoaded', function() {
