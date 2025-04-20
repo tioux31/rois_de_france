@@ -20,7 +20,7 @@ Une application web interactive présentant la chronologie des rois français de
 
 ## Accès au site
 
-Visitez la chronologie à l'adresse: [https://tioux31.github.io/rois_de_france/](https://votre-nom-utilisateur.github.io/rois_de_france/)
+Visitez la chronologie à l'adresse: [https://tioux31.github.io/rois_de_france/](https://tioux31.github.io/rois_de_france/)
 
 ## Dynasties Représentées
 
