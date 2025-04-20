@@ -1,3 +1,5 @@
+// Au tout début de votre fichier script.js
+console.log("Script.js chargé avec succès!");
 
 // Variables globales
 let zoomLevel = 1;
@@ -7,8 +9,96 @@ let currentQuizQuestion = 0;
 let quizScore = 0;
 let quizQuestions = [];
 
-// Au tout début de votre fichier script.js
-console.log("Script.js chargé avec succès!");
+// Données des rois de France
+const roisDeFrance = [
+    // Capétiens directs
+    { nom: "Hugues Capet", debut: 987, fin: 996, dynastie: "capet", 
+      description: "Premier roi de la dynastie capétienne, élu roi des Francs après la mort de Louis V." },
+    { nom: "Robert II le Pieux", debut: 996, fin: 1031, dynastie: "capet", 
+      description: "Fils d'Hugues Capet, il fut couronné du vivant de son père pour assurer la succession." },
+    { nom: "Henri Ier", debut: 1031, fin: 1060, dynastie: "capet", 
+      description: "Troisième roi capétien, il dut faire face à de nombreuses révoltes des grands seigneurs." },
+    { nom: "Philippe Ier", debut: 1060, fin: 1108, dynastie: "capet", 
+      description: "Son long règne est marqué par la première croisade et le début de la querelle des Investitures." },
+    { nom: "Louis VI le Gros", debut: 1108, fin: 1137, dynastie: "capet", 
+      description: "Il renforça l'autorité royale face aux grands seigneurs féodaux." },
+    { nom: "Louis VII le Jeune", debut: 1137, fin: 1180, dynastie: "capet", 
+      description: "Participa à la deuxième croisade. Son divorce d'avec Aliénor d'Aquitaine affaiblit considérablement le royaume." },
+    { nom: "Philippe II Auguste", debut: 1180, fin: 1223, dynastie: "capet", 
+      description: "Considéré comme l'un des rois les plus importants de l'histoire de France, il triompha du roi d'Angleterre à Bouvines." },
+    { nom: "Louis VIII le Lion", debut: 1223, fin: 1226, dynastie: "capet", 
+      description: "Fils de Philippe Auguste, son règne fut bref mais il poursuivit l'œuvre de son père." },
+    { nom: "Louis IX (Saint Louis)", debut: 1226, fin: 1270, dynastie: "capet", 
+      description: "Seul roi de France canonisé, il incarna le roi justicier et participa à deux croisades." },
+    { nom: "Philippe III le Hardi", debut: 1270, fin: 1285, dynastie: "capet", 
+      description: "Fils de Saint Louis, il poursuivit l'œuvre de centralisation monarchique." },
+    { nom: "Philippe IV le Bel", debut: 1285, fin: 1314, dynastie: "capet", 
+      description: "Souverain puissant et autoritaire, il est connu pour avoir fait détruire l'ordre des Templiers." },
+    { nom: "Louis X le Hutin", debut: 1314, fin: 1316, dynastie: "capet", 
+      description: "Fils aîné de Philippe le Bel, son règne fut très bref." },
+    { nom: "Jean Ier le Posthume", debut: 1316, fin: 1316, dynastie: "capet", 
+      description: "Fils posthume de Louis X, il ne vécut que cinq jours." },
+    { nom: "Philippe V le Long", debut: 1316, fin: 1322, dynastie: "capet", 
+      description: "Second fils de Philippe le Bel, il succéda à son neveu Jean Ier." },
+    { nom: "Charles IV le Bel", debut: 1322, fin: 1328, dynastie: "capet", 
+      description: "Dernier roi capétien direct, sa mort sans héritier mâle provoqua une crise de succession." },
+    
+    // Valois
+    { nom: "Philippe VI de Valois", debut: 1328, fin: 1350, dynastie: "valois", 
+      description: "Premier roi de la branche des Valois, son règne marque le début de la guerre de Cent Ans." },
+    { nom: "Jean II le Bon", debut: 1350, fin: 1364, dynastie: "valois", 
+      description: "Fait prisonnier à la bataille de Poitiers, il mourut en captivité à Londres." },
+    { nom: "Charles V le Sage", debut: 1364, fin: 1380, dynastie: "valois", 
+      description: "Connu pour sa sagesse et sa prudence, il réorganisa l'armée et redonna à la France sa puissance." },
+    { nom: "Charles VI le Fol", debut: 1380, fin: 1422, dynastie: "valois", 
+      description: "Sujet à des crises de folie, son règne fut marqué par la défaite d'Azincourt et le traité de Troyes." },
+    { nom: "Charles VII le Victorieux", debut: 1422, fin: 1461, dynastie: "valois", 
+      description: "Avec l'aide de Jeanne d'Arc, il reprit son royaume aux Anglais et mit fin à la guerre de Cent Ans." },
+    { nom: "Louis XI l'Universelle Araigne", debut: 1461, fin: 1483, dynastie: "valois", 
+      description: "Roi rusé et diplomate, il unifia le royaume et affirma l'autorité royale face aux grands féodaux." },
+    { nom: "Charles VIII l'Affable", debut: 1483, fin: 1498, dynastie: "valois", 
+      description: "Fils de Louis XI, il lance les guerres d'Italie avec la conquête du royaume de Naples." },
+    { nom: "Louis XII le Père du Peuple", debut: 1498, fin: 1515, dynastie: "valois", 
+      description: "Réputé pour sa bonté et sa justice, il poursuivit les guerres d'Italie." },
+    { nom: "François Ier", debut: 1515, fin: 1547, dynastie: "valois", 
+      description: "Grand mécène, il favorisa la Renaissance française et signa le Concordat de Bologne." },
+    { nom: "Henri II", debut: 1547, fin: 1559, dynastie: "valois", 
+      description: "Poursuivit la politique de son père. Il mourut accidentellement lors d'un tournoi." },
+    { nom: "François II", debut: 1559, fin: 1560, dynastie: "valois", 
+      description: "Roi à 15 ans, époux de Marie Stuart, son règne ne dura qu'un an." },
+    { nom: "Charles IX", debut: 1560, fin: 1574, dynastie: "valois", 
+      description: "Son règne fut marqué par les guerres de religion et le massacre de la Saint-Barthélemy." },
+    { nom: "Henri III", debut: 1574, fin: 1589, dynastie: "valois", 
+      description: "Dernier roi de la dynastie des Valois, il fut assassiné pendant les guerres de religion." },
+    
+    // Bourbons
+    { nom: "Henri IV", debut: 1589, fin: 1610, dynastie: "bourbon", 
+      description: "Premier roi Bourbon, il mit fin aux guerres de religion avec l'édit de Nantes." },
+    { nom: "Louis XIII le Juste", debut: 1610, fin: 1643, dynastie: "bourbon", 
+      description: "Avec l'aide de Richelieu, il renforça l'autorité royale et lutta contre les protestants." },
+    { nom: "Louis XIV le Roi-Soleil", debut: 1643, fin: 1715, dynastie: "bourbon", 
+      description: "Symbole de la monarchie absolue, son règne fut le plus long de l'histoire de France." },
+    { nom: "Louis XV le Bien-Aimé", debut: 1715, fin: 1774, dynastie: "bourbon", 
+      description: "D'abord populaire, il devint impopulaire à la fin de son règne, notamment à cause de la guerre de Sept Ans." },
+    { nom: "Louis XVI", debut: 1774, fin: 1792, dynastie: "bourbon", 
+      description: "Son règne fut marqué par la Révolution française. Il fut guillotiné en 1793." },
+    { nom: "Louis XVIII", debut: 1814, fin: 1824, dynastie: "bourbon", 
+      description: "Restauré après la chute de Napoléon, il instaura une monarchie constitutionnelle." },
+    { nom: "Charles X", debut: 1824, fin: 1830, dynastie: "bourbon", 
+      description: "Dernier roi de la branche aînée des Bourbons, renversé par la Révolution de 1830." },
+    
+    // Orléans
+    { nom: "Louis-Philippe Ier", debut: 1830, fin: 1848, dynastie: "orleans", 
+      description: "Roi des Français de la branche cadette d'Orléans, renversé par la Révolution de 1848." },
+    
+    // Bonaparte
+    { nom: "Napoléon Ier", debut: 1804, fin: 1814, dynastie: "bonaparte", 
+      description: "Général victorieux devenu empereur, il domina l'Europe avant d'être défait et exilé." },
+    { nom: "Napoléon Ier (Cent-Jours)", debut: 1815, fin: 1815, dynastie: "bonaparte", 
+      description: "Revenu d'exil pour une brève période, définitivement vaincu à Waterloo." },
+    { nom: "Napoléon III", debut: 1852, fin: 1870, dynastie: "bonaparte", 
+      description: "Neveu de Napoléon Ier, il fut le dernier monarque à régner sur la France." }
+];
 
 // Test de base
 document.addEventListener('DOMContentLoaded', function() {
@@ -51,6 +141,27 @@ function setupEventListeners() {
             filterKingsByDynasty();
         });
     });
+
+    // Boutons de vue
+    document.getElementById('timeline-view').addEventListener('click', function() {
+        switchView('timeline');
+    });
+    
+    document.getElementById('card-view').addEventListener('click', function() {
+        switchView('card');
+    });
+    
+    document.getElementById('quiz-view').addEventListener('click', function() {
+        switchView('quiz');
+    });
+
+    // Gérer le bouton 'Question suivante' du quiz
+    const nextQuestionBtn = document.getElementById('next-question');
+    if (nextQuestionBtn) {
+        nextQuestionBtn.addEventListener('click', showNextQuizQuestion);
+    }
+}
+
 function switchView(view) {
     console.log(`Changement de vue vers: ${view}`);
     
@@ -109,25 +220,6 @@ function switchView(view) {
                 startQuiz();
             }
             break;
-    }
-}
-    // Boutons de vue
-    document.getElementById('timeline-view').addEventListener('click', function() {
-        switchView('timeline');
-    });
-    
-    document.getElementById('card-view').addEventListener('click', function() {
-        switchView('card');
-    });
-    
-    document.getElementById('quiz-view').addEventListener('click', function() {
-        switchView('quiz');
-    });
-
-    // Gérer le bouton 'Question suivante' du quiz
-    const nextQuestionBtn = document.getElementById('next-question');
-    if (nextQuestionBtn) {
-        nextQuestionBtn.addEventListener('click', showNextQuizQuestion);
     }
 }
 
@@ -509,6 +601,7 @@ function showQuizResults() {
     document.getElementById('restart-quiz').addEventListener('click', startQuiz);
     document.getElementById('return-timeline').addEventListener('click', () => switchView('timeline'));
 }
+
 function createTimeline() {
     console.log("Création de la timeline");
     const timeline = document.getElementById('timeline');
@@ -520,6 +613,7 @@ function createTimeline() {
     
     timeline.innerHTML = '';
     
+      
     createTimelineMarkers();
     createDynastyBlocks();
 
