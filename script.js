@@ -426,7 +426,49 @@ function showQuizResults() {
     document.getElementById('restart-quiz').addEventListener('click', startQuiz);
     document.getElementById('return-timeline').addEventListener('click', () => switchView('timeline'));
 }
+function createTimeline() {
+    console.log("Création de la timeline");
+    const timeline = document.getElementById('timeline');
+    
+    if (!timeline) {
+        console.error("L'élément #timeline n'existe pas!");
+        return;
+    }
+    
+    timeline.innerHTML = '';
+    
+    createTimelineMarkers();
+    createDynastyBlocks();
 
+    console.log("Création des cartes de rois...");
+    console.log(`Nombre de rois: ${roisDeFrance.length}`);
+    
+    // Création des cartes de rois
+    roisDeFrance.forEach((roi, index) => {
+        const card = document.createElement('div');
+        card.classList.add('king-card');
+        card.setAttribute('data-dynastie', roi.dynastie);
+        card.setAttribute('data-index', index);
+        
+        // Structure HTML interne de la carte
+        card.innerHTML = `
+            <div class="king-portrait"></div>
+            <h3>${roi.nom}</h3>
+            <p>${roi.debut} - ${roi.fin}</p>
+        `;
+        
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.king-card').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            showKingDetails(roi);
+            highlightReign(roi);
+        });
+        
+        timeline.appendChild(card);
+    });
+    
+    console.log("Timeline créée!");
+}
 // Fonction d'initialisation
 function initApp() {
     createTimeline();
