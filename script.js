@@ -1,6 +1,3 @@
-// Au tout début de votre fichier script.js
-console.log("Script.js chargé avec succès!");
-
 // Variables globales
 let zoomLevel = 1;
 let currentDynasty = 'all';
@@ -11,108 +8,159 @@ let quizQuestions = [];
 
 // Données des rois de France
 const roisDeFrance = [
-    // Capétiens directs
-    { nom: "Hugues Capet", debut: 987, fin: 996, dynastie: "capet", 
-      description: "Premier roi de la dynastie capétienne, élu roi des Francs après la mort de Louis V." },
-    { nom: "Robert II le Pieux", debut: 996, fin: 1031, dynastie: "capet", 
-      description: "Fils d'Hugues Capet, il fut couronné du vivant de son père pour assurer la succession." },
-    { nom: "Henri Ier", debut: 1031, fin: 1060, dynastie: "capet", 
-      description: "Troisième roi capétien, il dut faire face à de nombreuses révoltes des grands seigneurs." },
-    { nom: "Philippe Ier", debut: 1060, fin: 1108, dynastie: "capet", 
-      description: "Son long règne est marqué par la première croisade et le début de la querelle des Investitures." },
-    { nom: "Louis VI le Gros", debut: 1108, fin: 1137, dynastie: "capet", 
-      description: "Il renforça l'autorité royale face aux grands seigneurs féodaux." },
-    { nom: "Louis VII le Jeune", debut: 1137, fin: 1180, dynastie: "capet", 
-      description: "Participa à la deuxième croisade. Son divorce d'avec Aliénor d'Aquitaine affaiblit considérablement le royaume." },
-    { nom: "Philippe II Auguste", debut: 1180, fin: 1223, dynastie: "capet", 
-      description: "Considéré comme l'un des rois les plus importants de l'histoire de France, il triompha du roi d'Angleterre à Bouvines." },
-    { nom: "Louis VIII le Lion", debut: 1223, fin: 1226, dynastie: "capet", 
-      description: "Fils de Philippe Auguste, son règne fut bref mais il poursuivit l'œuvre de son père." },
-    { nom: "Louis IX (Saint Louis)", debut: 1226, fin: 1270, dynastie: "capet", 
-      description: "Seul roi de France canonisé, il incarna le roi justicier et participa à deux croisades." },
-    { nom: "Philippe III le Hardi", debut: 1270, fin: 1285, dynastie: "capet", 
-      description: "Fils de Saint Louis, il poursuivit l'œuvre de centralisation monarchique." },
-    { nom: "Philippe IV le Bel", debut: 1285, fin: 1314, dynastie: "capet", 
-      description: "Souverain puissant et autoritaire, il est connu pour avoir fait détruire l'ordre des Templiers." },
-    { nom: "Louis X le Hutin", debut: 1314, fin: 1316, dynastie: "capet", 
-      description: "Fils aîné de Philippe le Bel, son règne fut très bref." },
-    { nom: "Jean Ier le Posthume", debut: 1316, fin: 1316, dynastie: "capet", 
-      description: "Fils posthume de Louis X, il ne vécut que cinq jours." },
-    { nom: "Philippe V le Long", debut: 1316, fin: 1322, dynastie: "capet", 
-      description: "Second fils de Philippe le Bel, il succéda à son neveu Jean Ier." },
-    { nom: "Charles IV le Bel", debut: 1322, fin: 1328, dynastie: "capet", 
-      description: "Dernier roi capétien direct, sa mort sans héritier mâle provoqua une crise de succession." },
-    
-    // Valois
-    { nom: "Philippe VI de Valois", debut: 1328, fin: 1350, dynastie: "valois", 
-      description: "Premier roi de la branche des Valois, son règne marque le début de la guerre de Cent Ans." },
-    { nom: "Jean II le Bon", debut: 1350, fin: 1364, dynastie: "valois", 
-      description: "Fait prisonnier à la bataille de Poitiers, il mourut en captivité à Londres." },
-    { nom: "Charles V le Sage", debut: 1364, fin: 1380, dynastie: "valois", 
-      description: "Connu pour sa sagesse et sa prudence, il réorganisa l'armée et redonna à la France sa puissance." },
-    { nom: "Charles VI le Fol", debut: 1380, fin: 1422, dynastie: "valois", 
-      description: "Sujet à des crises de folie, son règne fut marqué par la défaite d'Azincourt et le traité de Troyes." },
-    { nom: "Charles VII le Victorieux", debut: 1422, fin: 1461, dynastie: "valois", 
-      description: "Avec l'aide de Jeanne d'Arc, il reprit son royaume aux Anglais et mit fin à la guerre de Cent Ans." },
-    { nom: "Louis XI l'Universelle Araigne", debut: 1461, fin: 1483, dynastie: "valois", 
-      description: "Roi rusé et diplomate, il unifia le royaume et affirma l'autorité royale face aux grands féodaux." },
-    { nom: "Charles VIII l'Affable", debut: 1483, fin: 1498, dynastie: "valois", 
-      description: "Fils de Louis XI, il lance les guerres d'Italie avec la conquête du royaume de Naples." },
-    { nom: "Louis XII le Père du Peuple", debut: 1498, fin: 1515, dynastie: "valois", 
-      description: "Réputé pour sa bonté et sa justice, il poursuivit les guerres d'Italie." },
-    { nom: "François Ier", debut: 1515, fin: 1547, dynastie: "valois", 
-      description: "Grand mécène, il favorisa la Renaissance française et signa le Concordat de Bologne." },
-    { nom: "Henri II", debut: 1547, fin: 1559, dynastie: "valois", 
-      description: "Poursuivit la politique de son père. Il mourut accidentellement lors d'un tournoi." },
-    { nom: "François II", debut: 1559, fin: 1560, dynastie: "valois", 
-      description: "Roi à 15 ans, époux de Marie Stuart, son règne ne dura qu'un an." },
-    { nom: "Charles IX", debut: 1560, fin: 1574, dynastie: "valois", 
-      description: "Son règne fut marqué par les guerres de religion et le massacre de la Saint-Barthélemy." },
-    { nom: "Henri III", debut: 1574, fin: 1589, dynastie: "valois", 
-      description: "Dernier roi de la dynastie des Valois, il fut assassiné pendant les guerres de religion." },
-    
-    // Bourbons
-    { nom: "Henri IV", debut: 1589, fin: 1610, dynastie: "bourbon", 
-      description: "Premier roi Bourbon, il mit fin aux guerres de religion avec l'édit de Nantes." },
-    { nom: "Louis XIII le Juste", debut: 1610, fin: 1643, dynastie: "bourbon", 
-      description: "Avec l'aide de Richelieu, il renforça l'autorité royale et lutta contre les protestants." },
-    { nom: "Louis XIV le Roi-Soleil", debut: 1643, fin: 1715, dynastie: "bourbon", 
-      description: "Symbole de la monarchie absolue, son règne fut le plus long de l'histoire de France." },
-    { nom: "Louis XV le Bien-Aimé", debut: 1715, fin: 1774, dynastie: "bourbon", 
-      description: "D'abord populaire, il devint impopulaire à la fin de son règne, notamment à cause de la guerre de Sept Ans." },
-    { nom: "Louis XVI", debut: 1774, fin: 1792, dynastie: "bourbon", 
-      description: "Son règne fut marqué par la Révolution française. Il fut guillotiné en 1793." },
-    { nom: "Louis XVIII", debut: 1814, fin: 1824, dynastie: "bourbon", 
-      description: "Restauré après la chute de Napoléon, il instaura une monarchie constitutionnelle." },
-    { nom: "Charles X", debut: 1824, fin: 1830, dynastie: "bourbon", 
-      description: "Dernier roi de la branche aînée des Bourbons, renversé par la Révolution de 1830." },
-    
-    // Orléans
-    { nom: "Louis-Philippe Ier", debut: 1830, fin: 1848, dynastie: "orleans", 
-      description: "Roi des Français de la branche cadette d'Orléans, renversé par la Révolution de 1848." },
-    
-    // Bonaparte
-    { nom: "Napoléon Ier", debut: 1804, fin: 1814, dynastie: "bonaparte", 
-      description: "Général victorieux devenu empereur, il domina l'Europe avant d'être défait et exilé." },
-    { nom: "Napoléon Ier (Cent-Jours)", debut: 1815, fin: 1815, dynastie: "bonaparte", 
-      description: "Revenu d'exil pour une brève période, définitivement vaincu à Waterloo." },
-    { nom: "Napoléon III", debut: 1852, fin: 1870, dynastie: "bonaparte", 
-      description: "Neveu de Napoléon Ier, il fut le dernier monarque à régner sur la France." }
+    {
+        nom: "Hugues Capet",
+        debut: 987,
+        fin: 996,
+        mort: 996,
+        dynastie: "capet",
+        epouses: ["Adélaïde d'Aquitaine"],
+        naissance: "Reims",
+        parents: "Hugues le Grand et Hedwige de Saxe",
+        anecdote: "Premier roi de la dynastie capétienne, élu roi des Francs en 987. Sa dynastie capétienne marquera le début d'une nouvelle ère pour la France, remplaçant la dynastie carolingienne."
+    },
+    {
+        nom: "Robert II le Pieux",
+        debut: 996,
+        fin: 1031,
+        mort: 1031,
+        dynastie: "capet",
+        epouses: ["Suzanne de Bourgogne", "Constance d'Arles"],
+        naissance: "Orléans",
+        parents: "Hugues Capet et Adélaïde d'Aquitaine",
+        anecdote: "Deuxième roi capétien, surnommé 'le Pieux' pour sa dévotion. Il consolida le pouvoir de la jeune dynastie capétienne et renforça l'autorité royale."
+    },
+    {
+        nom: "Philippe Auguste",
+        debut: 1180,
+        fin: 1223,
+        mort: 1223,
+        dynastie: "capet",
+        epouses: ["Isabelle de Hainaut", "Ingeburge de Danemark"],
+        naissance: "Paris",
+        parents: "Louis VII et Adèle de Champagne",
+        anecdote: "Surnommé 'Auguste' pour ses grandes conquêtes, il a considérablement agrandi le domaine royal, renforçant ainsi la position de la dynastie capétienne."
+    },
+    {
+        nom: "Louis IX (Saint Louis)",
+        debut: 1226,
+        fin: 1270,
+        mort: 1270,
+        dynastie: "capet",
+        epouses: ["Marguerite de Provence"],
+        naissance: "Poissy",
+        parents: "Louis VIII et Blanche de Castille",
+        anecdote: "Seul roi français canonisé, il est connu pour sa piété, sa justice et ses deux croisades, marquant l'apogée de la dynastie capétienne."
+    },
+    {
+        nom: "Philippe IV le Bel",
+        debut: 1285,
+        fin: 1314,
+        mort: 1314,
+        dynastie: "capet",
+        epouses: ["Jeanne de Navarre"],
+        naissance: "Fontainebleau",
+        parents: "Philippe III et Marie de Brabant",
+        anecdote: "Roi puissant qui a affronté la papauté, il est responsable de la suppression de l'ordre des Templiers en 1307, marquant un tournant dans la dynastie capétienne."
+    },
+    {
+        nom: "Charles V le Sage",
+        debut: 1364,
+        fin: 1380,
+        mort: 1380,
+        dynastie: "valois",
+        epouses: ["Jeanne de Bourbon"],
+        naissance: "Vincennes",
+        parents: "Jean II le Bon et Bonne de Luxembourg",
+        anecdote: "Surnommé 'le Sage', il a redressé la situation militaire et politique de la France après les défaites de son père, notamment grâce à son connétable Bertrand du Guesclin, renforçant ainsi la position de la dynastie valois."
+    },
+    {
+        nom: "François Ier",
+        debut: 1515,
+        fin: 1547,
+        mort: 1547,
+        dynastie: "valois",
+        epouses: ["Claude de France"],
+        naissance: "Cognac",
+        parents: "Charles d'Angoulême et Louise de Savoie",
+        anecdote: "Grand mécène de la Renaissance, il attira de nombreux artistes comme Léonard de Vinci et développa considérablement les arts et la culture française, marquant l'apogée de la dynastie valois."
+    },
+    {
+        nom: "Henri IV",
+        debut: 1589,
+        fin: 1610,
+        mort: 1610,
+        dynastie: "bourbon",
+        epouses: ["Marguerite de Valois", "Marie de Médicis"],
+        naissance: "Pau",
+        parents: "Antoine de Bourbon et Jeanne d'Albret",
+        anecdote: "Premier roi de la dynastie des Bourbons, il mit fin aux guerres de religion avec l'édit de Nantes et fut assassiné par François Ravaillac, marquant le début d'une nouvelle ère pour la dynastie bourbon."
+    },
+    {
+        nom: "Louis XIV",
+        debut: 1643,
+        fin: 1715,
+        mort: 1715,
+        dynastie: "bourbon",
+        epouses: ["Marie-Thérèse d'Autriche"],
+        naissance: "Saint-Germain-en-Laye",
+        parents: "Louis XIII et Anne d'Autriche",
+        anecdote: "Le Roi-Soleil de la dynastie des Bourbons, symbole de l'absolutisme royal. Il a construit le château de Versailles et règné pendant 72 ans, le plus long règne de l'histoire de France."
+    },
+    {
+        nom: "Louis XVI",
+        debut: 1774,
+        fin: 1792,
+        mort: 1793,
+        dynastie: "bourbon",
+        epouses: ["Marie-Antoinette d'Autriche"],
+        naissance: "Versailles",
+        parents: "Louis, Dauphin de France et Marie-Josèphe de Saxe",
+        anecdote: "Dernier roi bourbon de l'Ancien Régime, jugé et exécuté par guillotine pendant la Révolution française, marquant la fin de la monarchie absolue."
+    },
+    {
+        nom: "Napoléon Bonaparte",
+        debut: 1804,
+        fin: 1814,
+        mort: 1821,
+        dynastie: "bonaparte",
+        epouses: ["Joséphine de Beauharnais", "Marie-Louise d'Autriche"],
+        naissance: "Ajaccio",
+        parents: "Carlo Maria Bonaparte et Maria Letizia Ramolino",
+        anecdote: "Empereur des Français, il a profondément transformé la France et l'Europe par ses conquêtes militaires et ses réformes administratives."
+    },
+    {
+        nom: "Louis-Philippe Ier",
+        debut: 1830,
+        fin: 1848,
+        mort: 1850,
+        dynastie: "orleans",
+        epouses: ["Marie-Amélie de Bourbon-Siciles"],
+        naissance: "Paris",
+        parents: "Philippe d'Orléans et Louise-Marie d'Orléans",
+        anecdote: "Dernier roi des Français de la dynastie d'Orléans, surnommé 'le Roi-Citoyen', il fut renversé par la Révolution de 1848 et s'exila en Angleterre."
+    },
+    {
+        nom: "Napoléon III",
+        debut: 1852,
+        fin: 1870,
+        mort: 1873,
+        dynastie: "bonaparte",
+        epouses: ["Eugénie de Montijo"],
+        naissance: "Paris",
+        parents: "Louis-Napoléon Bonaparte et Hortense de Beauharnais",
+        anecdote: "Dernier monarque à régner sur la France, il a modernisé Paris et mené une politique étrangère ambitieuse."
+    }
 ];
 
-// Test de base
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Document chargé");
-    
-    // Vérification des éléments clés
-    console.log("Élément timeline existe:", !!document.getElementById('timeline'));
-    console.log("Élément quiz-container existe:", !!document.getElementById('quiz-container'));
-    
-    // Lancement de l'application
-    initApp();
-});
+// Fonction d'initialisation principale
+function initApp() {
+    createTimeline();
+    setupEventListeners();
+    generateQuizQuestions();
+}
 
-// Fonction pour configurer les écouteurs d'événements
+// Mise en place des écouteurs d'événements
 function setupEventListeners() {
     // Boutons de zoom
     document.getElementById('zoom-in').addEventListener('click', function() {
@@ -144,482 +192,103 @@ function setupEventListeners() {
 
     // Boutons de vue
     document.getElementById('timeline-view').addEventListener('click', function() {
-        switchView('timeline');
+        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('timeline').classList.remove('card-view-mode');
     });
     
     document.getElementById('card-view').addEventListener('click', function() {
-        switchView('card');
+        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('timeline').classList.add('card-view-mode');
     });
     
     document.getElementById('quiz-view').addEventListener('click', function() {
-        switchView('quiz');
+        alert("Le mode quiz n'est pas disponible dans cette démo, mais sera fonctionnel dans la version complète.");
     });
 
-    // Gérer le bouton 'Question suivante' du quiz
+    // Gérer le bouton 'Question suivante' du quiz si présent
     const nextQuestionBtn = document.getElementById('next-question');
     if (nextQuestionBtn) {
         nextQuestionBtn.addEventListener('click', showNextQuizQuestion);
     }
 }
 
-function switchView(view) {
-    console.log(`Changement de vue vers: ${view}`);
-    
-    const timelineContainer = document.querySelector('.timeline-container');
-    const kingDetails = document.getElementById('king-details');
-    const quizContainer = document.getElementById('quiz-container');
-    
-    if (!timelineContainer) console.error("L'élément .timeline-container n'existe pas!");
-    if (!kingDetails) console.error("L'élément #king-details n'existe pas!");
-    if (!quizContainer) console.error("L'élément #quiz-container n'existe pas!");
-    
-    currentView = view;
-    
-    // Mettre à jour les boutons de vue
-    document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.getElementById(`${view}-view`);
-    if (activeBtn) {
-        activeBtn.classList.add('active');
-    }
-    
-    // Masquer tous les contenus
-    if (timelineContainer) timelineContainer.classList.add('hidden');
-    if (kingDetails) kingDetails.classList.add('hidden');
-    if (quizContainer) quizContainer.classList.add('hidden');
-    
-    // Afficher le contenu correspondant à la vue
-    console.log(`Activation de la vue: ${view}`);
-    
-    switch(view) {
-        case 'timeline':
-            if (timelineContainer) {
-                timelineContainer.classList.remove('hidden');
-                console.log("Timeline container visible");
-            }
-            if (kingDetails) {
-                kingDetails.classList.remove('hidden');
-                console.log("King details visible");
-            }
-            break;
-        case 'card':
-            if (timelineContainer) {
-                timelineContainer.classList.remove('hidden');
-                console.log("Timeline container visible (mode carte)");
-            }
-            if (kingDetails) {
-                kingDetails.classList.remove('hidden');
-                console.log("King details visible (mode carte)");
-            }
-            const timelineEl = document.getElementById('timeline');
-            if (timelineEl) timelineEl.classList.add('card-view-mode');
-            break;
-        case 'quiz':
-            if (quizContainer) {
-                quizContainer.classList.remove('hidden');
-                console.log("Quiz container visible");
-                startQuiz();
-            }
-            break;
-    }
-}
-
-// Fonction pour mettre à jour le zoom
 function updateZoom() {
     const timeline = document.getElementById('timeline');
     timeline.style.transform = `scale(${zoomLevel})`;
     timeline.style.transformOrigin = 'center top';
 }
 
-// Fonctions pour le quiz
-function generateQuizQuestions() {
-    quizQuestions = [
-        // Questions sur les Capétiens
-        {
-            question: "Quel roi a régné le plus longtemps en France?",
-            options: ["Louis XIV", "Napoléon Bonaparte", "François Ier", "Louis XV"],
-            correct: 0
-        },
-        {
-            question: "Qui était le premier roi de la dynastie capétienne?",
-            options: ["Clovis", "Hugues Capet", "Robert II le Pieux", "Charlemagne"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a été guillotiné pendant la Révolution française?",
-            options: ["Louis XV", "Louis XVI", "Louis XVIII", "Charles X"],
-            correct: 1
-        },
-        {
-            question: "Quelle dynastie a succédé aux Capétiens directs?",
-            options: ["Les Bourbons", "Les Valois", "Les Bonaparte", "Les Orléans"],
-            correct: 1
-        },
-        {
-            question: "Quel roi est connu sous le nom de 'Saint Louis'?",
-            options: ["Louis VIII", "Louis IX", "Louis X", "Louis XIII"],
-            correct: 1
-        },
-        {
-            question: "Qui a construit le château de Versailles?",
-            options: ["François Ier", "Henri IV", "Louis XIII", "Louis XIV"],
-            correct: 3
-        },
-        {
-            question: "Quel roi est surnommé 'le Roi-Soleil'?",
-            options: ["Louis XIII", "Louis XIV", "Louis XV", "Louis XVI"],
-            correct: 1
-        },
-        {
-            question: "Quelle dynastie a régné le plus longtemps en France?",
-            options: ["Les Capétiens", "Les Valois", "Les Bourbons", "Les Bonaparte"],
-            correct: 0
-        },
-        {
-            question: "Quel roi a signé l'édit de Nantes?",
-            options: ["Louis XIII", "François Ier", "Henri IV", "Louis XIV"],
-            correct: 2
-        },
-        {
-            question: "Quel roi a révoqué l'édit de Nantes?",
-            options: ["Louis XIII", "Louis XIV", "Louis XV", "Henri IV"],
-            correct: 1
-        },
-        {
-            question: "Qui était le dernier roi des Valois?",
-            options: ["Henri II", "Charles IX", "Henri III", "François II"],
-            correct: 2
-        },
-        {
-            question: "Quel surnom portait Philippe IV?",
-            options: ["Le Hardi", "Le Bel", "Le Pieux", "Le Sage"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a déplacé la résidence royale de Paris à Versailles?",
-            options: ["Louis XIII", "Louis XIV", "Louis XV", "Henri IV"],
-            correct: 1
-        },
-        {
-            question: "Qui était le principal ministre de Louis XIII?",
-            options: ["Mazarin", "Richelieu", "Colbert", "Sully"],
-            correct: 1
-        },
-        {
-            question: "Sous quel roi la Guerre de Cent Ans a-t-elle commencé?",
-            options: ["Philippe IV le Bel", "Charles IV le Bel", "Philippe VI de Valois", "Jean II le Bon"],
-            correct: 2
-        },
-        {
-            question: "Quel roi a fait construire la Sainte-Chapelle à Paris?",
-            options: ["Philippe Auguste", "Louis IX (Saint Louis)", "Philippe le Bel", "Louis VIII"],
-            correct: 1
-        },
-        {
-            question: "Sous quel règne Jeanne d'Arc a-t-elle aidé à faire sacrer le roi à Reims?",
-            options: ["Charles VI", "Charles VII", "Louis XI", "Philippe VI"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a modernisé Paris sous le Second Empire?",
-            options: ["Louis-Philippe", "Charles X", "Louis XVIII", "Napoléon III"],
-            correct: 3
-        },
-        {
-            question: "Quel était le surnom de Louis XI?",
-            options: ["Le Prudent", "L'Universelle Araigne", "Le Sage", "Le Pieux"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a fondé l'Académie française?",
-            options: ["Henri IV", "Louis XIII", "Louis XIV", "François Ier"],
-            correct: 1
-        },
-        {
-            question: "Qui était surnommé 'le Roi-Citoyen'?",
-            options: ["Louis XVI", "Louis XVIII", "Charles X", "Louis-Philippe"],
-            correct: 3
-        },
-        {
-            question: "Quel roi a épousé Marie-Antoinette?",
-            options: ["Louis XIV", "Louis XV", "Louis XVI", "Louis XVII"],
-            correct: 2
-        },
-        {
-            question: "Sous quel roi la France a-t-elle perdu la Guerre de Sept Ans?",
-            options: ["Louis XIV", "Louis XV", "Louis XVI", "Louis XIII"],
-            correct: 1
-        },
-        {
-            question: "Quel roi était surnommé 'le Bien-Aimé' avant de devenir 'le Mal-Aimé'?",
-            options: ["Louis XIV", "Louis XV", "Louis XVI", "Henri IV"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a été assassiné par François Ravaillac?",
-            options: ["Henri III", "Henri IV", "Louis XIII", "Louis XIV"],
-            correct: 1
-        },
-        {
-            question: "Sous quel roi la France a-t-elle acquis l'Alsace?",
-            options: ["Henri IV", "Louis XIII", "Louis XIV", "Louis XV"],
-            correct: 2
-        },
-        {
-            question: "Quelle était la profession originelle d'Hugues Capet avant de devenir roi?",
-            options: ["Comte de Paris", "Duc de France", "Abbé laïc", "Comte de Vermandois"],
-            correct: 1
-        },
-        {
-            question: "Quel roi français a aussi été roi de Pologne?",
-            options: ["Louis XIV", "Henri III", "François Ier", "Charles X"],
-            correct: 1
-        },
-        {
-            question: "Qui était le père de Louis XIV?",
-            options: ["Henri IV", "Louis XII", "Louis XIII", "Louis XV"],
-            correct: 2
-        },
-        {
-            question: "Quel roi a été surnommé 'le Père du Peuple'?",
-            options: ["Henri IV", "Louis XII", "Saint Louis", "Philippe Auguste"],
-            correct: 1
-        },
-        {
-            question: "Combien d'années a duré le règne de Louis XIV?",
-            options: ["50 ans", "72 ans", "63 ans", "81 ans"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a dit 'Paris vaut bien une messe'?",
-            options: ["François Ier", "Louis XIV", "Henri IV", "Louis XVI"],
-            correct: 2
-        },
-        {
-            question: "Sous quel roi la France a-t-elle perdu le Canada?",
-            options: ["Louis XIV", "Louis XV", "Louis XVI", "Charles X"],
-            correct: 1
-        },
-        {
-            question: "Quel roi français a épousé Anne de Bretagne?",
-            options: ["Charles VIII", "Louis XII", "François Ier", "Henri II"],
-            correct: 0
-        },
-        {
-            question: "Quel roi a fondé la Bibliothèque nationale de France?",
-            options: ["Louis XIV", "François Ier", "Charles V", "Louis XIII"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a invité Léonard de Vinci en France?",
-            options: ["Louis XII", "François Ier", "Charles VIII", "Henri II"],
-            correct: 1
-        },
-        {
-            question: "Qui était le roi lors de la Saint-Barthélemy en 1572?",
-            options: ["Charles IX", "Henri III", "Charles VIII", "Henri II"],
-            correct: 0
-        },
-        {
-            question: "Quel roi a créé la Banque de France?",
-            options: ["Louis XVI", "Louis XVIII", "Napoléon Bonaparte", "Louis-Philippe"],
-            correct: 2
-        },
-        {
-            question: "Qui est le seul roi français à être devenu empereur?",
-            options: ["Louis-Philippe", "Charles X", "Napoléon Bonaparte", "Louis XVIII"],
-            correct: 2
-        },
-        {
-            question: "Quel roi a été surnommé 'le Sage'?",
-            options: ["Charles V", "Louis XI", "Louis IX", "Philippe IV"],
-            correct: 0
-        },
-        {
-            question: "Quel roi a introduit la gabelle (impôt sur le sel)?",
-            options: ["Philippe VI", "Philippe le Bel", "Louis XIV", "Charles VII"],
-            correct: 1
-        },
-        {
-            question: "Sous quel roi la guerre de Cent Ans s'est-elle terminée?",
-            options: ["Charles V", "Charles VI", "Charles VII", "Louis XI"],
-            correct: 2
-        },
-        {
-            question: "Quel roi a été surnommé 'le Fou'?",
-            options: ["Charles V", "Charles VI", "Charles VII", "Charles VIII"],
-            correct: 1
-        },
-        {
-            question: "Qui était le dernier roi de la Restauration?",
-            options: ["Louis XVIII", "Charles X", "Louis-Philippe", "Napoléon III"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a été renversé par la Révolution de 1830?",
-            options: ["Louis XVIII", "Charles X", "Louis-Philippe", "Louis XVI"],
-            correct: 1
-        },
-        {
-            question: "Quel roi a été renversé par la Révolution de 1848?",
-            options: ["Charles X", "Louis-Philippe", "Napoléon III", "Louis XVIII"],
-            correct: 1
-        },
-        {
-            question: "Qui a succédé directement à Louis XIV?",
-            options: ["Louis XV", "Louis XVI", "Le Régent Philippe d'Orléans", "Louis XIII"],
-            correct: 0
-        },
-        {
-            question: "Quel roi a été prisonnier des Anglais après la bataille de Poitiers?",
-            options: ["Philippe VI", "Jean II le Bon", "Charles V", "Charles VII"],
-            correct: 1
-        },
-        {
-            question: "Qui était le ministre principal de Louis XV?",
-            options: ["Richelieu", "Mazarin", "Choiseul", "Colbert"],
-            correct: 2
-        },
-        {
-            question: "Quel est le dernier monarque à avoir régné sur la France?",
-            options: ["Louis-Philippe", "Charles X", "Napoléon III", "Henri V (prétendant)"],
-            correct: 2
-        }
+function createTimelineMarkers() {
+    const timelineMarkersContainer = document.getElementById('timeline-markers');
+    timelineMarkersContainer.innerHTML = '';
+
+    // Années de début et de fin pour la chronologie
+    const startYear = 987;
+    const endYear = 1900;
+
+    // Créer des marqueurs pour chaque siècle
+    for (let year = 1000; year <= endYear; year += 100) {
+        const position = ((year - startYear) / (endYear - startYear)) * 100;
+        
+        // Marqueur d'année
+        const marker = document.createElement('div');
+        marker.classList.add('timeline-marker');
+        marker.style.left = `${position}%`;
+        marker.textContent = year;
+        
+        // Ligne verticale pour chaque siècle
+        const verticalLine = document.createElement('div');
+        verticalLine.classList.add('century-line');
+        verticalLine.style.left = `${position}%`;
+        
+        timelineMarkersContainer.appendChild(marker);
+        timelineMarkersContainer.appendChild(verticalLine);
+    }
+}
+
+function createDynastyBlocks() {
+    const dynastyBlocksContainer = document.getElementById('dynasty-blocks');
+    dynastyBlocksContainer.innerHTML = '';
+
+    const startYear = 987;
+    const endYear = 1900;
+
+    // Définir toutes les dynasties
+    const dynasties = [
+        { name: 'capet', start: 987, end: 1328, label: 'Capétiens' },
+        { name: 'valois', start: 1328, end: 1589, label: 'Valois' },
+        { name: 'bourbon', start: 1589, end: 1792, label: 'Bourbons' },
+        { name: 'bonaparte', start: 1804, end: 1814, label: 'Bonaparte (1er Empire)' },
+        { name: 'bourbon', start: 1814, end: 1830, label: 'Bourbons (Restauration)' },
+        { name: 'orleans', start: 1830, end: 1848, label: 'Orléans' },
+        { name: 'bonaparte', start: 1852, end: 1870, label: 'Bonaparte (2nd Empire)' }
     ];
-    
-    // Mélanger les questions
-    quizQuestions = shuffleArray(quizQuestions);
-}
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
+    // Créer les blocs pour chaque dynastie
+    dynasties.forEach(dynasty => {
+        const left = ((dynasty.start - startYear) / (endYear - startYear)) * 100;
+        const width = ((dynasty.end - dynasty.start) / (endYear - startYear)) * 100;
 
-function startQuiz() {
-    currentQuizQuestion = 0;
-    quizScore = 0;
-    showQuizQuestion();
-}
+        const block = document.createElement('div');
+        block.classList.add('dynasty-block');
+        block.setAttribute('data-dynastie', dynasty.name);
+        block.style.left = `${left}%`;
+        block.style.width = `${width}%`;
+        block.title = `${dynasty.label} (${dynasty.start}-${dynasty.end})`;
 
-function showQuizQuestion() {
-    if (currentQuizQuestion >= quizQuestions.length) {
-        // Quiz terminé, afficher les résultats
-        showQuizResults();
-        return;
-    }
-    
-    const question = quizQuestions[currentQuizQuestion];
-    const questionElement = document.getElementById('quiz-question');
-    const optionsElement = document.getElementById('quiz-options');
-    const resultElement = document.getElementById('quiz-result');
-    
-    // Effacer les résultats précédents
-    resultElement.innerHTML = '';
-    resultElement.className = '';
-    
-    // Afficher la question
-    questionElement.textContent = `${currentQuizQuestion + 1}. ${question.question}`;
-    
-    // Afficher les options
-    optionsElement.innerHTML = '';
-    question.options.forEach((option, index) => {
-        const optionElement = document.createElement('div');
-        optionElement.classList.add('quiz-option');
-        optionElement.textContent = option;
-        optionElement.addEventListener('click', () => checkAnswer(index));
-        optionsElement.appendChild(optionElement);
+        dynastyBlocksContainer.appendChild(block);
     });
-    
-    // Masquer le bouton "Question suivante"
-    document.getElementById('next-question').style.display = 'none';
-}
-
-function checkAnswer(selectedIndex) {
-    const question = quizQuestions[currentQuizQuestion];
-    const optionElements = document.querySelectorAll('.quiz-option');
-    const resultElement = document.getElementById('quiz-result');
-    
-    // Désactiver les clics sur les options
-    optionElements.forEach(option => {
-        option.style.pointerEvents = 'none';
-    });
-    
-    // Marquer la réponse correcte et la réponse de l'utilisateur
-    optionElements[question.correct].classList.add('correct');
-    if (selectedIndex !== question.correct) {
-        optionElements[selectedIndex].classList.add('incorrect');
-    }
-    
-    // Vérifier si la réponse est correcte
-    if (selectedIndex === question.correct) {
-        resultElement.textContent = "Correct! Bien joué!";
-        resultElement.className = 'correct';
-        quizScore++;
-    } else {
-        resultElement.textContent = `Incorrect. La bonne réponse est: ${question.options[question.correct]}`;
-        resultElement.className = 'incorrect';
-    }
-    
-    // Afficher le bouton "Question suivante"
-    document.getElementById('next-question').style.display = 'block';
-}
-
-function showNextQuizQuestion() {
-    currentQuizQuestion++;
-    showQuizQuestion();
-}
-
-function showQuizResults() {
-    const quizContainer = document.getElementById('quiz-container');
-    const percentage = Math.round((quizScore / quizQuestions.length) * 100);
-    
-    let message;
-    if (percentage >= 80) {
-        message = "Excellent! Vous êtes un véritable historien royal!";
-    } else if (percentage >= 60) {
-        message = "Bien joué! Vous connaissez bien l'histoire des rois de France.";
-    } else if (percentage >= 40) {
-        message = "Pas mal! Il vous reste quelques rois à découvrir.";
-    } else {
-        message = "Vous avez encore beaucoup à apprendre sur les rois de France!";
-    }
-    
-    quizContainer.innerHTML = `
-        <h2>Résultats du Quiz Royal</h2>
-        <div class="quiz-results">
-            <p>Votre score: ${quizScore} / ${quizQuestions.length} (${percentage}%)</p>
-            <p>${message}</p>
-            <button id="restart-quiz" class="royal-btn">Recommencer le quiz</button>
-            <button id="return-timeline" class="royal-btn">Retour à la chronologie</button>
-        </div>
-    `;
-    
-    // Ajouter des écouteurs d'événements pour les boutons
-    document.getElementById('restart-quiz').addEventListener('click', startQuiz);
-    document.getElementById('return-timeline').addEventListener('click', () => switchView('timeline'));
 }
 
 function createTimeline() {
-    console.log("Création de la timeline");
     const timeline = document.getElementById('timeline');
-    
-    if (!timeline) {
-        console.error("L'élément #timeline n'existe pas!");
-        return;
-    }
-    
     timeline.innerHTML = '';
     
-      
     createTimelineMarkers();
     createDynastyBlocks();
 
-    console.log("Création des cartes de rois...");
-    console.log(`Nombre de rois: ${roisDeFrance.length}`);
-    
     // Création des cartes de rois
     roisDeFrance.forEach((roi, index) => {
         const card = document.createElement('div');
@@ -634,24 +303,122 @@ function createTimeline() {
             <p>${roi.debut} - ${roi.fin}</p>
         `;
         
+        // Ajouter un événement de clic sur la carte
         card.addEventListener('click', function() {
+            // Retirer la classe active de toutes les cartes
             document.querySelectorAll('.king-card').forEach(c => c.classList.remove('active'));
+            // Ajouter la classe active à la carte cliquée
             this.classList.add('active');
+            // Afficher les détails du roi
             showKingDetails(roi);
+            // Mettre en évidence le règne sur la frise
             highlightReign(roi);
         });
         
         timeline.appendChild(card);
     });
-    
-    console.log("Timeline créée!");
-}
-// Fonction d'initialisation
-function initApp() {
-    createTimeline();
-    setupEventListeners();
-    generateQuizQuestions();
 }
 
-// Initialiser l'application au chargement du document
+function showKingDetails(roi) {
+    const detailsContainer = document.getElementById('king-details');
+    
+    // Déterminer la couleur de la dynastie pour le style
+    let dynastyColor;
+    switch(roi.dynastie) {
+        case 'capet': dynastyColor = 'var(--capet-color)'; break;
+        case 'valois': dynastyColor = 'var(--valois-color)'; break;
+        case 'bourbon': dynastyColor = 'var(--bourbon-color)'; break;
+        case 'orleans': dynastyColor = 'var(--orleans-color)'; break;
+        case 'bonaparte': dynastyColor = 'var(--bonaparte-color)'; break;
+        default: dynastyColor = '#333';
+    }
+    
+    // Contenu HTML détaillé
+    detailsContainer.innerHTML = `
+        <h2 style="border-bottom-color: ${dynastyColor};">${roi.nom}</h2>
+        <div class="king-info">
+            <div class="king-details-text">
+                <p><strong>Règne :</strong> ${roi.debut} à ${roi.fin} (${roi.fin - roi.debut} ans)</p>
+                <p><strong>Naissance :</strong> ${roi.naissance}</p>
+                <p><strong>Décès :</strong> ${roi.mort}</p>
+                <p><strong>Dynastie :</strong> ${roi.dynastie.charAt(0).toUpperCase() + roi.dynastie.slice(1)}</p>
+                <p><strong>Parents :</strong> ${roi.parents}</p>
+                <p><strong>Épouse(s) :</strong> ${roi.epouses.join(', ')}</p>
+            </div>
+            <div class="anecdote-box">
+                <h3>Anecdote historique</h3>
+                <p>${roi.anecdote}</p>
+            </div>
+        </div>
+    `;
+    
+    // Animation de transition
+    detailsContainer.style.opacity = '0';
+    setTimeout(() => {
+        detailsContainer.style.opacity = '1';
+    }, 50);
+}
+
+function highlightReign(roi) {
+    const timelineMarkers = document.getElementById('timeline-markers');
+    
+    // Supprimer toute mise en évidence existante
+    const existingHighlight = timelineMarkers.querySelector('.reign-highlight');
+    if (existingHighlight) existingHighlight.remove();
+    
+    // Calculer la position et la largeur
+    const startYear = 987;
+    const endYear = 1900;
+    const left = ((roi.debut - startYear) / (endYear - startYear)) * 100;
+    const width = ((roi.fin - roi.debut) / (endYear - startYear)) * 100;
+    
+    // Créer l'élément de mise en évidence
+    const highlight = document.createElement('div');
+    highlight.classList.add('reign-highlight');
+    highlight.style.left = `${left}%`;
+    highlight.style.width = `${width}%`;
+    highlight.title = `${roi.nom}: ${roi.debut}-${roi.fin}`;
+    
+    timelineMarkers.appendChild(highlight);
+}
+
+function filterKingsByDynasty() {
+    const kingCards = document.querySelectorAll('.king-card');
+    
+    kingCards.forEach(card => {
+        if (currentDynasty === 'all' || card.getAttribute('data-dynastie') === currentDynasty) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Fonctions pour le quiz (version simplifiée)
+function generateQuizQuestions() {
+    quizQuestions = [
+        {
+            question: "Quel roi a régné le plus longtemps en France?",
+            options: ["Louis XIV", "Napoléon Bonaparte", "François Ier", "Louis XV"],
+            correct: 0
+        },
+        {
+            question: "Qui était le premier roi de la dynastie capétienne?",
+            options: ["Clovis", "Hugues Capet", "Robert II le Pieux", "Charlemagne"],
+            correct: 1
+        },
+        {
+            question: "Quel roi a été guillotiné pendant la Révolution française?",
+            options: ["Louis XV", "Louis XVI", "Louis XVIII", "Charles X"],
+            correct: 1
+        }
+    ];
+}
+
+function showNextQuizQuestion() {
+    // Fonction simplifiée pour éviter des erreurs
+    console.log("Question suivante demandée");
+}
+
+// Initialiser l'application au chargement
 document.addEventListener('DOMContentLoaded', initApp);
