@@ -50,7 +50,66 @@ function setupEventListeners() {
             filterKingsByDynasty();
         });
     });
-
+function switchView(view) {
+    console.log(`Changement de vue vers: ${view}`);
+    
+    const timelineContainer = document.querySelector('.timeline-container');
+    const kingDetails = document.getElementById('king-details');
+    const quizContainer = document.getElementById('quiz-container');
+    
+    if (!timelineContainer) console.error("L'élément .timeline-container n'existe pas!");
+    if (!kingDetails) console.error("L'élément #king-details n'existe pas!");
+    if (!quizContainer) console.error("L'élément #quiz-container n'existe pas!");
+    
+    currentView = view;
+    
+    // Mettre à jour les boutons de vue
+    document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById(`${view}-view`);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+    }
+    
+    // Masquer tous les contenus
+    if (timelineContainer) timelineContainer.classList.add('hidden');
+    if (kingDetails) kingDetails.classList.add('hidden');
+    if (quizContainer) quizContainer.classList.add('hidden');
+    
+    // Afficher le contenu correspondant à la vue
+    console.log(`Activation de la vue: ${view}`);
+    
+    switch(view) {
+        case 'timeline':
+            if (timelineContainer) {
+                timelineContainer.classList.remove('hidden');
+                console.log("Timeline container visible");
+            }
+            if (kingDetails) {
+                kingDetails.classList.remove('hidden');
+                console.log("King details visible");
+            }
+            break;
+        case 'card':
+            if (timelineContainer) {
+                timelineContainer.classList.remove('hidden');
+                console.log("Timeline container visible (mode carte)");
+            }
+            if (kingDetails) {
+                kingDetails.classList.remove('hidden');
+                console.log("King details visible (mode carte)");
+            }
+            const timelineEl = document.getElementById('timeline');
+            if (timelineEl) timelineEl.classList.add('card-view-mode');
+            break;
+        case 'quiz':
+            if (quizContainer) {
+                quizContainer.classList.remove('hidden');
+                console.log("Quiz container visible");
+                startQuiz();
+            }
+            break;
+    }
+}
     // Boutons de vue
     document.getElementById('timeline-view').addEventListener('click', function() {
         switchView('timeline');
