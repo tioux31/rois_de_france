@@ -513,6 +513,7 @@ function updateZoom() {
     timeline.style.transformOrigin = 'center top';
 }
 
+// Mise à jour de la fonction updateView pour refléter ces changements
 function updateView() {
     const timeline = document.getElementById('timeline');
     const timelineContainer = document.querySelector('.timeline-container');
@@ -520,16 +521,42 @@ function updateView() {
     const quizContainer = document.getElementById('quiz-container');
     
     // Réinitialiser tous les conteneurs
-    timeline.classList.remove('card-view-mode');
     kingDetails.classList.remove('hidden');
     quizContainer.classList.add('hidden');
     timelineContainer.classList.remove('hidden');
     
     if (currentView === 'timeline') {
-        // Vue chronologique (par défaut)
+        // Vue chronologique
+        timeline.classList.remove('card-view-mode');
+        
+        // Repositionner tous les rois sur la frise
+        const sortedRois = [...roisDeFrance].sort((a, b) => a.debut - b.debut);
+        sortedRois.forEach((roi, index) => {
+            const card = timeline.querySelectorAll('.king-card')[index];
+            if (card) {
+                const startYear = 987;
+                const endYear = 1900;
+                const left = ((roi.debut - startYear) / (endYear - startYear)) * 100;
+                
+                card.style.position = 'absolute';
+                card.style.left = `${left}%`;
+                card.style.transform = 'translateX(-50%)';
+            }
+        });
+        
+        timeline.style.height = '650px';
     } else if (currentView === 'card') {
         // Vue par cartes
         timeline.classList.add('card-view-mode');
+        
+        // Réinitialiser les styles de positionnement
+        timeline.querySelectorAll('.king-card').forEach(card => {
+            card.style.position = '';
+            card.style.left = '';
+            card.style.transform = '';
+        });
+        
+        timeline.style.height = 'auto';
     } else if (currentView === 'quiz') {
         // Vue quiz
         kingDetails.classList.add('hidden');
@@ -618,15 +645,6 @@ function createTimeline() {
         card.setAttribute('data-dynastie', roi.dynastie);
         card.setAttribute('data-index', index);
         
-        // Calculer la position sur la frise chronologique
-        const startYear = 987;
-        const endYear = 1900;
-        const left = ((roi.debut - startYear) / (endYear - startYear)) * 100;
-        
-        if (currentView === 'timeline') {
-            card.style.left = `${left}%`;
-        }
-        
         // Structure HTML interne de la carte
         card.innerHTML = `
             <div class="king-portrait"></div>
@@ -648,6 +666,34 @@ function createTimeline() {
         
         timeline.appendChild(card);
     });
+
+    // Si on est en mode chronologie, positionner correctement les rois sur la frise
+    if (currentView === 'timeline') {
+        sortedRois.forEach((roi, index) => {
+            const card = timeline.querySelectorAll('.king-card')[index];
+            
+            // Calculer la position sur la frise chronologique
+            const startYear = 987;
+            const endYear = 1900;
+            const left = ((roi.debut - startYear) / (endYear - startYear)) * 100;
+            
+            card.style.position = 'absolute';
+            card.style.left = `${left}%`;
+            card.style.transform = 'translateX(-50%)'; // Centrer horizontalement
+        });
+        
+        // S'assurer que la hauteur du timeline est suffisante pour afficher tous les rois
+        timeline.style.height = '650px';
+    } else {
+        // En mode carte, réinitialiser les styles de positionnement
+        timeline.querySelectorAll('.king-card').forEach(card => {
+            card.style.position = '';
+            card.style.left = '';
+            card.style.transform = '';
+        });
+        
+        timeline.style.height = 'auto';
+    }
 }
 
 function showKingDetails(roi) {
