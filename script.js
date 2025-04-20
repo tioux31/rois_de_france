@@ -1,3 +1,6 @@
+// Au tout début de votre fichier script.js
+console.log("Script.js chargé avec succès!");
+
 // Fonction pour configurer les écouteurs d'événements
 function setupEventListeners() {
     // Boutons de zoom
