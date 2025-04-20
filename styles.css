@@ -511,7 +511,7 @@ h1 {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 /* Dynasty legend styles */
 .dynasty-legend {
