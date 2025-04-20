@@ -1,6 +1,26 @@
 // Au tout début de votre fichier script.js
 console.log("Script.js chargé avec succès!");
 
+// Variables globales
+let zoomLevel = 1;
+let currentDynasty = 'all';
+let currentView = 'timeline';
+let currentQuizQuestion = 0;
+let quizScore = 0;
+let quizQuestions = [];
+
+// Test de base
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Document chargé");
+    
+    // Vérification des éléments clés
+    console.log("Élément timeline existe:", !!document.getElementById('timeline'));
+    console.log("Élément quiz-container existe:", !!document.getElementById('quiz-container'));
+    
+    // Lancement de l'application
+    initApp();
+});
+
 // Fonction pour configurer les écouteurs d'événements
 function setupEventListeners() {
     // Boutons de zoom
