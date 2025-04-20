@@ -240,7 +240,7 @@ h1 {
     background-color: var(--dark-parchment);
     border-radius: 8px;
     padding: 15px;
-    width: calc((100% - 6 * 10px) / 6);
+    width: calc((100% - 50px) / 6);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -294,11 +294,10 @@ h1 {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    object-fit: cover;
+    background-color: #f5f5f5;
     margin-bottom: 10px;
     border: 3px solid var(--royal-gold);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    background-color: #f5f5f5;
 }
 
 /* King details styles */
@@ -421,6 +420,8 @@ h1 {
     color: var(--royal-blue);
     text-align: center;
     margin-bottom: 20px;
+    border-bottom: 2px solid var(--royal-gold);
+    padding-bottom: 10px;
 }
 
 #quiz-question {
@@ -450,6 +451,7 @@ h1 {
 
 .quiz-option:hover {
     background-color: var(--light-parchment);
+    transform: translateY(-2px);
 }
 
 .quiz-option.correct {
@@ -462,7 +464,6 @@ h1 {
     border-color: #c0392b;
 }
 
-#quiz-result
 #quiz-result {
     padding: 15px;
     margin: 15px 0;
@@ -480,6 +481,7 @@ h1 {
     background-color: rgba(231, 76, 60, 0.2);
     color: #c0392b;
 }
+
 .quiz-results {
     text-align: center;
     padding: 20px;
@@ -495,165 +497,4 @@ h1 {
 
 .royal-btn {
     background-color: var(--royal-blue);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    margin: 10px;
-    cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-    transition: all 0.3s ease;
-}
-
-.royal-btn:hover {
-    background-color: var(--royal-gold);
-    transform: translateY(-2px);
-}
-
-.hidden {
-    display: none !important;
-}
-/* Dynasty legend styles */
-.dynasty-legend {
-    background-color: white;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    margin-top: 20px;
-}
-
-.dynasty-legend h3 {
-    font-family: 'Cormorant Garamond', serif;
-    text-align: center;
-    margin-bottom: 10px;
-    color: var(--royal-blue);
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    margin: 8px 0;
-}
-
-.legend-color {
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-.legend-color.capet { background-color: var(--capet-color); }
-.legend-color.valois { background-color: var(--valois-color); }
-.legend-color.bourbon { background-color: var(--bourbon-color); }
-.legend-color.orleans { background-color: var(--orleans-color); }
-.legend-color.bonaparte { background-color: var(--bonaparte-color); }
-
-/* Utility classes */
-.hidden {
-    display: none;
-}
-
-/* Card view mode */
-#timeline.card-view-mode {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-#timeline.card-view-mode .king-card {
-    width: 100%;
-    padding: 20px;
-}
-
-#timeline.card-view-mode .king-portrait {
-    width: 120px;
-    height: 120px;
-}
-
-/* Footer styles */
-footer {
-    background-color: var(--royal-blue);
-    color: var(--text-light);
-    text-align: center;
-    padding: 15px;
-    margin-top: 30px;
-    font-size: 0.9rem;
-    border-radius: 10px;
-}
-
-/* Responsive styles */
-@media screen and (max-width: 1024px) {
-    .king-card {
-        width: calc((100% - 4 * 10px) / 4);
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .main-container {
-        padding: 10px;
-    }
-
-    h1 {
-        font-size: 2rem;
-    }
-
-    .subtitle {
-        font-size: 1rem;
-    }
-
-    .controls-container {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .timeline-container {
-        padding: 15px 10px;
-    }
-
-    .king-card {
-        width: calc((100% - 2 * 10px) / 3);
-    }
-
-    .king-details {
-        padding: 15px;
-    }
-
-    .king-info {
-        grid-template-columns: 1fr;
-    }
-
-    #timeline.card-view-mode {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-}
-
-@media screen and (max-width: 480px) {
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    .fleur-de-lys {
-        width: 25px;
-        height: 25px;
-    }
-
-    .king-card {
-        width: calc((100% - 10px) / 2);
-    }
-
-    .dynasty-filter span {
-        display: none;
-    }
-
-    .timeline-container {
-        padding: 10px 5px;
-    }
-
-    #timeline-markers {
-        height: 30px;
-    }
-
-    .timeline-marker {
-        font-size: 10px;
-    }
-}
+    color:
