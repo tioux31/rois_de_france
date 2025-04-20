@@ -874,6 +874,7 @@ function selectQuizOption(optionElement, questionIndex) {
     };
 }
 
+// Fonction pour afficher les résultats du quiz
 function showQuizResults() {
     const quizContainer = document.getElementById('quiz-container');
     const percentage = Math.round((quizScore / quizQuestions.length) * 100);
@@ -898,9 +899,11 @@ function showQuizResults() {
         </div>
     `;
     
-    document.getElementById('restart-quiz').addEventListener('click', startQuiz);
+    // Ajouter l'écouteur d'événement directement après la création du bouton
+    document.getElementById('restart-quiz').addEventListener('click', function() {
+        startQuiz();
+    });
 }
-
 function showNextQuizQuestion() {
     currentQuizQuestion++;
     if (currentQuizQuestion < quizQuestions.length) {
