@@ -666,35 +666,124 @@ function createTimeline() {
         
         timeline.appendChild(card);
     });
-
+    
     // Si on est en mode chronologie, positionner correctement les rois sur la frise
     if (currentView === 'timeline') {
+        // Tableau pour stocker les positions occupées
+        const occupiedPositions = [];
+        const cardWidth = 110; // Largeur approximative d'une carte en pixels
+        const timelineWidth = timeline.offsetWidth;
+        
+        // Déterminer la taille de l'écran pour adapter le nombre de rangées max
+        let maxRows = 5; // Par défaut
+        if (window.innerWidth >= 2560) { // Écrans 4K et plus
+            maxRows = 7;
+        } else if (window.innerWidth >= 1920) { // Écrans Full HD et plus
+            maxRows = 6;
+        }
+        
         sortedRois.forEach((roi, index) => {
             const card = timeline.querySelectorAll('.king-card')[index];
             
             // Calculer la position sur la frise chronologique
             const startYear = 987;
             const endYear = 1900;
-            const left = ((roi.debut - startYear) / (endYear - startYear)) * 100;
+            const leftPercent = ((roi.debut - startYear) / (endYear - startYear)) * 100;
+            const leftPixel = (leftPercent / 100) * timelineWidth;
             
+            // Déterminer la rangée (niveau vertical) pour cette carte
+            let row = 0;
+            let overlap = true;
+            
+            while (overlap && row < maxRows) {
+                overlap = false;
+                
+                // Vérifier le chevauchement avec les cartes déjà placées
+                // Ajuster la zone de chevauchement pour les écrans larges
+                let overlapThreshold = cardWidth * 0.9; // 90% de la largeur de la carte
+                if (window.innerWidth >= 2560) {
+                    overlapThreshold = cardWidth * 0.7; // Réduire la zone de chevauchement sur grands écrans
+                }
+                
+                for (const position of occupiedPositions) {
+                    if (position.row === row && 
+                        Math.abs(position.left - leftPixel) < overlapThreshold) {
+                        overlap = true;
+                        break;
+                    }
+                }
+                
+                if (overlap) {
+                    row++;
+                }
+            }
+            
+            // Si toutes les rangées sont occupées, choisir celle avec le moins de chevauchement
+            if (row >= maxRows) {
+                // Trouver la meilleure rangée
+                let bestRow = 0;
+                let minOverlap = Number.MAX_VALUE;
+                
+                for (let r = 0; r < maxRows; r++) {
+                    let maxOverlap = 0;
+                    for (const position of occupiedPositions.filter(p => p.row === r)) {
+                        const dist = Math.abs(position.left - leftPixel);
+                        if (dist < cardWidth && dist > maxOverlap) {
+                            maxOverlap = dist;
+                        }
+                    }
+                    
+                    if (maxOverlap < minOverlap) {
+                        minOverlap = maxOverlap;
+                        bestRow = r;
+                    }
+                }
+                
+                row = bestRow;
+            }
+            
+            // Enregistrer cette position comme occupée
+            occupiedPositions.push({
+                left: leftPixel,
+                row: row
+            });
+            
+            // Positionner la carte
             card.style.position = 'absolute';
-            card.style.left = `${left}%`;
+            card.style.left = `${leftPercent}%`;
+            card.style.top = `${row * 95}px`; // Réduire légèrement l'espacement vertical
             card.style.transform = 'translateX(-50%)'; // Centrer horizontalement
         });
         
-        // S'assurer que la hauteur du timeline est suffisante pour afficher tous les rois
-        timeline.style.height = '650px';
+        // Déterminer la hauteur nécessaire pour le timeline en fonction de la rangée maximale
+        const maxRow = Math.max(...occupiedPositions.map(pos => pos.row));
+        timeline.style.height = `${(maxRow + 1) * 95 + 30}px`; // Ajuster l'espace
     } else {
         // En mode carte, réinitialiser les styles de positionnement
         timeline.querySelectorAll('.king-card').forEach(card => {
             card.style.position = '';
             card.style.left = '';
+            card.style.top = '';
             card.style.transform = '';
         });
         
         timeline.style.height = 'auto';
     }
 }
+
+// Fonction pour redimensionner la chronologie lors du redimensionnement de la fenêtre
+function handleResize() {
+    if (currentView === 'timeline') {
+        createTimeline();
+    }
+}
+
+// Ajout d'un écouteur d'événement pour le redimensionnement de la fenêtre
+window.addEventListener('resize', function() {
+    // Débounce pour éviter des appels trop fréquents
+    clearTimeout(window.resizeTimer);
+    window.resizeTimer = setTimeout(handleResize, 250);
+});
 
 function showKingDetails(roi) {
     const detailsContainer = document.getElementById('king-details');
